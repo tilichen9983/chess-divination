@@ -20,7 +20,7 @@ h1 { color: #ffd54f; margin-bottom: 20px; }
     justify-content: center;
     gap: 30px;
     flex-wrap: wrap;
-    align-items: flex-start; /* 讓右側控制台可以自由上下動態移動 */
+    align-items: flex-start;
     position: relative;
 }
 
@@ -152,7 +152,7 @@ h1 { color: #ffd54f; margin-bottom: 20px; }
 
 /* 右側動態跟隨外框 */
 .control-wrapper {
-    width: 360px;
+    width: 400px;
     transition: transform 0.45s cubic-bezier(0.25, 0.8, 0.25, 1);
     will-change: transform;
 }
@@ -243,7 +243,7 @@ h1 { color: #ffd54f; margin-bottom: 20px; }
     background: transparent;
     display: flex;
     flex-direction: column;
-    height: 300px; 
+    height: 290px;
 }
 
 .scatter-header {
@@ -288,30 +288,73 @@ h1 { color: #ffd54f; margin-bottom: 20px; }
 .scatter-pool {
     position: relative;
     flex: 1;
-    background: #3a2415;
+    background: #2b1a0f;
     border-radius: 8px;
     overflow: hidden;
     border: 3px inset #5c3a21;
+    box-shadow: inset 0 4px 12px rgba(0,0,0,0.7);
 }
 
+/* 立體銀灰色並帶金粉點綴的蓋牌棋子 */
 .scatter-piece {
     position: absolute;
-    width: 42px;
-    height: 42px;
+    width: 36px;
+    height: 36px;
+    margin-left: -18px;
+    margin-top: -18px;
     border-radius: 50%;
-    background: radial-gradient(circle at center, #8b6914, #4a2f1f);
-    box-shadow: 2px 3px 5px rgba(0,0,0,0.6), inset 0 0 5px #2c1810;
+    /* 多層次金粉點綴 + 立體銀灰金屬漸層 */
+    background-image:
+        radial-gradient(circle at 24% 28%, rgba(255, 223, 100, 0.95) 0.5px, transparent 1.8px),
+        radial-gradient(circle at 72% 22%, rgba(255, 200, 50, 0.85) 0.8px, transparent 2px),
+        radial-gradient(circle at 46% 52%, rgba(255, 235, 130, 0.9) 0.6px, transparent 1.6px),
+        radial-gradient(circle at 28% 74%, rgba(218, 165, 32, 0.9) 1px, transparent 2.2px),
+        radial-gradient(circle at 78% 68%, rgba(255, 215, 0, 0.85) 0.7px, transparent 1.8px),
+        radial-gradient(circle at 58% 82%, rgba(255, 240, 150, 0.95) 0.5px, transparent 1.5px),
+        radial-gradient(circle at 18% 52%, rgba(238, 180, 34, 0.8) 0.7px, transparent 1.8px),
+        radial-gradient(circle at 64% 38%, rgba(255, 215, 0, 0.75) 0.6px, transparent 1.5px),
+        radial-gradient(circle at 38% 20%, rgba(255, 230, 110, 0.85) 0.5px, transparent 1.5px),
+        radial-gradient(circle at 30% 25%, #f5f7fa 0%, #c3c8ce 38%, #7b8189 78%, #43484e 100%);
+    /* 3D 厚度與內外反光陰影 */
+    box-shadow:
+        0 4px 6px rgba(0, 0, 0, 0.75),
+        0 1px 3px rgba(0, 0, 0, 0.6),
+        inset 0 2px 3px rgba(255, 255, 255, 0.85),
+        inset 0 -3px 4px rgba(30, 33, 38, 0.85),
+        inset 0 0 6px rgba(255, 215, 0, 0.25);
+    border: 1.5px solid #9ea4ac;
     cursor: pointer;
     transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), 
                 top 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), 
                 left 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), 
-                opacity 0.3s ease;
-    border: 2px solid #2c1810;
+                opacity 0.3s ease,
+                box-shadow 0.2s ease;
     z-index: 10;
 }
 
+/* 棋子內圈金屬壓紋與細微金邊 */
+.scatter-piece::after {
+    content: '';
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    right: 4px;
+    bottom: 4px;
+    border-radius: 50%;
+    border: 1px dashed rgba(255, 215, 0, 0.45);
+    box-shadow:
+        inset 0 1px 2px rgba(0, 0, 0, 0.4),
+        0 1px 1px rgba(255, 255, 255, 0.5);
+    pointer-events: none;
+}
+
 .scatter-piece:hover {
-    box-shadow: 0 0 15px #ffd54f;
+    box-shadow:
+        0 0 14px #ffd54f,
+        0 5px 10px rgba(0, 0, 0, 0.8),
+        inset 0 2px 4px rgba(255, 255, 255, 0.95),
+        inset 0 -2px 4px rgba(30, 33, 38, 0.8);
+    border-color: #ffe082;
     z-index: 100 !important;
 }
 
@@ -321,11 +364,11 @@ h1 { color: #ffd54f; margin-bottom: 20px; }
     transform: scale(0) !important;
 }
 
-@media (max-width: 800px) {
+@media (max-width: 850px) {
     .control-wrapper {
         transform: none !important;
         width: 100%;
-        max-width: 400px;
+        max-width: 420px;
     }
 }
 </style>
@@ -366,7 +409,7 @@ h1 { color: #ffd54f; margin-bottom: 20px; }
             </div>
 
             <div class="hint-text">
-                排列順序規則：排盤前最多可洗牌 3 次，開始抽棋後即鎖定不可洗牌。點選下方散落區的任一顆棋子，操作介面將自動對齊命盤落子高度。
+                排列順序規則：排盤前最多可洗牌 3 次，開始抽棋後即鎖定不可洗牌。點選下方攤開的銀灰金粉棋子，操作介面將自動對齊命盤落子高度。
             </div>
 
             <!-- 狀態顯示區塊 -->
@@ -383,7 +426,7 @@ h1 { color: #ffd54f; margin-bottom: 20px; }
             <!-- 散落棋子與洗牌區 -->
             <div class="scatter-section">
                 <div class="scatter-header">
-                    <h3>🀄 散落的棋子</h3>
+                    <h3>🀄 攤開的棋子 (請點選)</h3>
                     <button id="shuffleBtn" class="shuffle-btn" onclick="shuffleScatterPool()">✋ 洗牌 (剩 3 次)</button>
                 </div>
                 <div id="scatterPool" class="scatter-pool"></div>
@@ -456,6 +499,30 @@ function shuffle(array) {
     return array;
 }
 
+// 產生 32 個不重疊的散落座標（採用 8x4 虛擬網格 + 隨機微幅偏移，確保全部攤開不堆疊）
+function generateNonOverlappingPositions() {
+    const cols = 8;
+    const rows = 4;
+    const slots = [];
+
+    for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+            // 每個網格中心點百分比
+            const baseX = (c + 0.5) * (100 / cols);
+            const baseY = (r + 0.5) * (100 / rows);
+            // 加入微幅隨機偏移，保持自然散落感且不碰觸鄰近棋子
+            const jitterX = (Math.random() - 0.5) * 2.2;
+            const jitterY = (Math.random() - 0.5) * 4.5;
+            slots.push({
+                left: baseX + jitterX,
+                top: baseY + jitterY,
+                rotate: Math.random() * 360
+            });
+        }
+    }
+    return shuffle(slots);
+}
+
 function renderBoard() {
     const grid = document.getElementById('boardGrid');
     grid.innerHTML = '';
@@ -493,6 +560,8 @@ function renderScatterPool() {
     const poolEl = document.getElementById('scatterPool');
     poolEl.innerHTML = '';
     
+    const positions = generateNonOverlappingPositions();
+
     remainingPieces.forEach((piece, index) => {
         if (!piece) return;
         
@@ -500,51 +569,47 @@ function renderScatterPool() {
         pieceEl.className = 'scatter-piece';
         pieceEl.id = `scatter-piece-${index}`;
         
-        const left = Math.random() * 80 + 4; 
-        const top = Math.random() * 80 + 4;
-        const rotate = Math.random() * 360;
-        
-        pieceEl.style.left = left + '%';
-        pieceEl.style.top = top + '%';
-        pieceEl.style.transform = `rotate(${rotate}deg)`;
+        const pos = positions[index];
+        pieceEl.style.left = pos.left + '%';
+        pieceEl.style.top = pos.top + '%';
+        pieceEl.style.transform = `rotate(${pos.rotate}deg)`;
         
         pieceEl.onclick = () => drawSpecificPiece(index, pieceEl);
         poolEl.appendChild(pieceEl);
     });
 }
 
-// 優化1：只有在尚未開始排命盤前 (currentIndex === 0) 才能洗牌
+// 只有在尚未開始排命盤前 (currentIndex === 0) 才能洗牌，洗牌後同樣維持不重疊攤開
 function shuffleScatterPool() {
     if (currentIndex > 0 || shuffleCount <= 0) return;
     
     shuffleCount--;
-    // 實際重新打亂牌組陣列
     remainingPieces = shuffle([...remainingPieces]);
     updateShuffleBtn();
 
     const domPieces = document.querySelectorAll('.scatter-piece:not(.drawn)');
     
-    // 第一階段：集中到中間
+    // 第一階段：集中到中心洗牌
     domPieces.forEach(el => {
-        el.style.left = '45%';
-        el.style.top = '40%';
-        el.style.transform = `rotate(${Math.random() * 360}deg) scale(1.1)`;
+        const offsetX = (Math.random() - 0.5) * 12;
+        const offsetY = (Math.random() - 0.5) * 12;
+        el.style.left = (50 + offsetX) + '%';
+        el.style.top = (50 + offsetY) + '%';
+        el.style.transform = `rotate(${Math.random() * 360}deg) scale(1.08)`;
     });
 
-    // 第二階段：隨機散開
+    // 第二階段：重新攤開至不重疊的位置
     setTimeout(() => {
-        domPieces.forEach(el => {
-            const left = Math.random() * 80 + 4; 
-            const top = Math.random() * 80 + 4;
-            const rotate = Math.random() * 360;
-            el.style.left = left + '%';
-            el.style.top = top + '%';
-            el.style.transform = `rotate(${rotate}deg) scale(1)`;
+        const newPositions = generateNonOverlappingPositions();
+        domPieces.forEach((el, idx) => {
+            const pos = newPositions[idx];
+            el.style.left = pos.left + '%';
+            el.style.top = pos.top + '%';
+            el.style.transform = `rotate(${pos.rotate}deg) scale(1)`;
         });
-    }, 400);
+    }, 450);
 }
 
-// 更新洗牌按鈕狀態：只要開始抽牌 (currentIndex > 0) 立即鎖定取消洗牌功能
 function updateShuffleBtn() {
     const btn = document.getElementById('shuffleBtn');
     if (currentIndex > 0) {
@@ -559,45 +624,39 @@ function updateShuffleBtn() {
     }
 }
 
-// 優化2：動態調整右側操作介面高度，與當前插入命盤的棋子高度對齊
+// 動態調整右側操作介面高度，與當前插入命盤的棋子高度對齊
 function syncPanelHeightToCell(position) {
     const wrapper = document.getElementById('controlWrapper');
     const panel = document.getElementById('controlPanel');
     const boardCard = document.getElementById('boardCard');
     const cell = document.getElementById(`cell-${position}`);
 
-    // 移除舊的高亮標示
     document.querySelectorAll('.cell.active-target').forEach(el => {
         el.classList.remove('active-target');
     });
 
-    if (!position || !cell || window.innerWidth <= 800) {
+    if (!position || !cell || window.innerWidth <= 850) {
         wrapper.style.transform = 'translateY(0px)';
         return;
     }
 
-    // 為當前放入的棋子加上高亮光暈
     cell.classList.add('active-target');
 
-    // 計算該棋子格相對於左側命盤頂部的高度
     const boardRect = boardCard.getBoundingClientRect();
     const cellRect = cell.getBoundingClientRect();
     const cellCenterRelative = (cellRect.top - boardRect.top) + (cellRect.height / 2);
 
-    // 將右側控制台的「本次抽出棋子顯示區」對齊左側剛放入的命盤格子高度
     const drawnDisplay = document.getElementById('drawnDisplay');
     const panelRect = panel.getBoundingClientRect();
     const drawnRect = drawnDisplay.getBoundingClientRect();
     const anchorOffsetInPanel = (drawnRect.top - panelRect.top) + (drawnRect.height / 2);
 
-    // 計算出需要往下位移的距離，並限制不超過命盤底部
     const maxOffset = Math.max(0, boardCard.offsetHeight - panel.offsetHeight);
     let targetOffset = cellCenterRelative - anchorOffsetInPanel;
     targetOffset = Math.max(0, Math.min(targetOffset, maxOffset));
 
     wrapper.style.transform = `translateY(${targetOffset}px)`;
 
-    // 同時讓瀏覽器視窗平滑滾動，確保放入的棋子與操作區維持在畫面視野中央
     setTimeout(() => {
         cell.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }, 100);
@@ -633,10 +692,7 @@ function placePieceOnBoard(piece) {
     currentIndex++;
     document.getElementById('poolCount').textContent = 32 - currentIndex;
 
-    // 開始排盤後立即鎖定洗牌按鈕
     updateShuffleBtn();
-
-    // 動態調整控制台高度對齊剛插入的棋子
     syncPanelHeightToCell(position);
 
     if (currentIndex < 32) {
@@ -667,7 +723,6 @@ function resetGame() {
     renderSidebar();
     renderScatterPool();
 
-    // 重置右側控制台位置回頂部
     syncPanelHeightToCell(null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -734,7 +789,6 @@ function loadResult() {
     
     document.getElementById('poolCount').textContent = 32 - currentIndex;
     
-    // 更新洗牌按鈕狀態（若 currentIndex > 0 會自動禁用洗牌）
     updateShuffleBtn();
     
     if (currentIndex >= 32) {
@@ -754,7 +808,6 @@ function loadResult() {
     renderLoadedBoard();
     renderScatterPool();
     
-    // 載入後將控制台對齊最後一顆放入的棋子位置
     if (currentIndex > 0 && currentIndex < 32) {
         syncPanelHeightToCell(currentIndex);
     } else {
