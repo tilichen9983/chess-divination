@@ -213,6 +213,10 @@ h1 { color: #ffd54f; margin-bottom: 20px; }
     font-size: 12px;
 }
 </style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+
 </head>
 <body>
 
@@ -239,8 +243,29 @@ h1 { color: #ffd54f; margin-bottom: 20px; }
             <div style="color:#777; font-size:14px;">尚未抽取棋子</div>
         </div>
 
-        <button class="draw-btn" id="drawBtn" onclick="drawPiece()">🎲 翻開棋子</button>
-        <button class="reset-btn" onclick="resetGame()">🔄 重新排盤</button>
+		<button class="draw-btn" id="drawBtn" onclick="drawPiece()">🎲 翻開棋子</button>
+		<button class="reset-btn" onclick="resetGame()">🔄 重新排盤</button>
+		
+function captureBoard() {
+    const boardCard = document.querySelector('.board-card');
+    html2canvas(boardCard, {
+        backgroundColor: '#15151f',
+        scale: 2
+    }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = `命盤卜卦_${new Date().getTime()}.jpg`;
+        link.href = canvas.toDataURL('image/jpeg', 0.95);
+        link.click();
+    });
+}
+		
+		
+		
+		<button class="reset-btn" onclick="saveResult()">💾 儲存命盤</button>
+		<button class="reset-btn" onclick="loadResult()">📂 載入命盤</button>
+		<button class="reset-btn" onclick="captureBoard()">📸 截圖命盤</button>
+
+		<div id="completeMsg"></div>
 
         <div id="completeMsg"></div>
 
@@ -445,7 +470,122 @@ function resetGame() {
 }
 
 window.onload = resetGame;
+
+function saveResult() {
+    const name = prompt("請為您的命盤命名（例如：2026生涯占卜）:");
+    if (!name) return;
+
+    const resultData = {
+        name: name,
+        timestamp: new Date().toISOString(),
+        pieces: placedPieces
+    };
+
+    let savedResults = JSON.parse(localStorage.getItem('chessDivinationResults') || '[]');
+    savedResults.push(resultData);
+    localStorage.setItem('chessDivinationResults', JSON.stringify(savedResults));
+
+    alert(`命盤「${name}」已儲存！`);
+    generateInterpretation(true);
+}
+
+function loadResult() {
+    let savedResults = JSON.parse(localStorage.getItem('chessDivinationResults') || '[]');
+    if (savedResults.length === 0) {
+        alert("沒有已儲存的命盤紀錄。");
+        return;
+    }
+    const savedNames = savedResults.map(r => r.name);
+    const selectedName = prompt(`請選擇要載入的命盤：\n${savedNames.join('\n')}`);
+    const resultToLoad = savedResults.find(r => r.name === selectedName);
+    if (!resultToLoad) {
+        alert("找不到該命盤紀錄。");
+        return;
+    }
+
+    placedPieces = resultToLoad.pieces;
+    currentIndex = Object.keys(placedPieces).length;
+    document.getElementById('poolCount').textContent = 32 - currentIndex;
+    document.getElementById('drawBtn').disabled = true;
+    document.getElementById('completeMsg').textContent = `命盤「${resultToLoad.name}」已載入`;
+
+    renderLoadedBoard();
+    alert(`命盤「${resultToLoad.name}」已載入。`);
+}
+
+function renderLoadedBoard() {
+    const grid = document.getElementById('boardGrid');
+    grid.innerHTML = '';
+    boardLayout.forEach(row => {
+        const rowDiv = document.createElement('div');
+        rowDiv.className = 'board-row';
+        row.nums.forEach(num => {
+            const cell = document.createElement('div');
+            cell.className = 'cell';
+            cell.id = `cell-${num}`;
+            if (num === 1) cell.classList.add('start-cell');
+
+            const piece = placedPieces[num];
+            if (piece) {
+                const pieceEl = document.createElement('div');
+                pieceEl.className = `chess-piece ${piece.color}`;
+                pieceEl.textContent = piece.name;
+                cell.appendChild(pieceEl);
+            } else {
+                cell.classList.add('covered');
+                const label = document.createElement('span');
+                label.className = 'slot-number';
+                label.textContent = num;
+                cell.appendChild(label);
+            }
+            rowDiv.appendChild(cell);
+        });
+        grid.appendChild(rowDiv);
+    });
+    renderSidebar();
+}
+
+function generateInterpretation(isSaved = false) {
+    let interpretationHtml = "";
+    const title = isSaved ? "命盤解讀" : "本次占卜結果";
+
+    const stageOrder = ['總格','學習格','情感格','事業格','41~50','51~60','61~70','71以後'];
+    const stagePieceCounts = {};
+    stageOrder.forEach(stage => stagePieceCounts[stage] = { red: 0, black: 0, total: 0 });
+
+    for (const posStr in placedPieces) {
+        const pos = parseInt(posStr);
+        const piece = placedPieces[pos];
+        let currentStage = '總格';
+        for (const stage of stageRanges) {
+            if (pos >= stage.range[0] && pos <= stage.range[1]) {
+                currentStage = stage.label;
+                break;
+            }
+        }
+        stagePieceCounts[currentStage][piece.color]++;
+        stagePieceCounts[currentStage].total++;
+    }
+
+    interpretationHtml += `<h2>${title}</h2><p>本次占卜結果顯示：</p><ul>`;
+    stageOrder.forEach(stage => {
+        const c = stagePieceCounts[stage];
+        if (c.total > 0) {
+            interpretationHtml += `<li><strong>${stage}</strong>：紅棋 ${c.red} 顆、黑棋 ${c.black} 顆（共 ${c.total} 顆）</li>`;
+        }
+    });
+    interpretationHtml += "</ul><p>請綜合以上各階段的棋子分佈，並結合個人情況進行體悟。</p>";
+
+    if (isSaved) {
+        alert("命盤解讀:\n" + interpretationHtml.replace(/<[^>]*>/g, ''));
+    } else {
+        document.getElementById('completeMsg').innerHTML = interpretationHtml;
+    }
+}
+
+
 </script>
+
 </body>
 </html>
 
