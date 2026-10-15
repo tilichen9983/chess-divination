@@ -144,7 +144,7 @@ h1 { color: #ffd54f; margin-bottom: 20px; }
     background: #4a2f1f;
     border-radius: 12px;
     padding: 20px;
-    width: 300px;
+    width: 350px; /* 稍微加寬以容納洗牌區 */
     text-align: left;
     display: flex;
     flex-direction: column;
@@ -164,22 +164,26 @@ h1 { color: #ffd54f; margin-bottom: 20px; }
     margin-bottom: 15px;
 }
 
-.draw-btn, .reset-btn {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 10px;
-    border: none;
-    border-radius: 8px;
-    font-size: 15px;
-    cursor: pointer;
-    font-weight: bold;
+.btn-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 15px;
 }
 
-.draw-btn { background: #ffd54f; color: #3a2415; }
-.draw-btn:disabled { background: #777; cursor: not-allowed; }
-.reset-btn { background: #c62828; color: #fff; }
+.reset-btn {
+    flex: 1 1 45%;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: bold;
+    background: #c62828;
+    color: #fff;
+}
 
-#completeMsg { text-align: center; color: #81c784; font-weight: bold; margin-bottom: 10px; line-height: 1.5; }
+#completeMsg { text-align: center; color: #81c784; font-weight: bold; margin-bottom: 10px; line-height: 1.5; font-size: 15px; }
 
 .order-indicator {
     background: #3a2415;
@@ -193,43 +197,34 @@ h1 { color: #ffd54f; margin-bottom: 20px; }
 
 .hint-text { font-size: 12px; color: #aaa; margin-bottom: 15px; line-height: 1.6; }
 
-.stage-info-section h3 { color: #ffd54f; font-size: 15px; margin-bottom: 10px; }
-.stage-row { display: flex; align-items: center; font-size: 13px; margin-bottom: 6px; }
-.stage-dot { width: 12px; height: 12px; border-radius: 50%; margin-right: 8px; display: inline-block; }
-.stage-range { color: #999; margin-left: auto; font-size: 12px; }
-
-/* 散落區 (洗牌區) 的樣式設計 */
+/* 整合進控制台的散落區樣式 */
 .scatter-section {
-    width: 100%;
-    max-width: 900px;
-    background: #4a2f1f;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.5);
-    margin: 20px auto 0;
-    box-sizing: border-box;
+    margin-top: auto; /* 靠下對齊 */
+    background: transparent;
 }
 
 .scatter-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
+    padding-top: 15px;
+    border-top: 1px solid #5c3a21;
 }
 
 .scatter-header h3 {
     margin: 0;
     color: #ffd54f;
-    font-size: 18px;
+    font-size: 15px;
 }
 
 .shuffle-btn {
     background: #ff9800;
     color: #fff;
     border: none;
-    border-radius: 8px;
-    padding: 8px 16px;
-    font-size: 14px;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 13px;
     font-weight: bold;
     cursor: pointer;
     box-shadow: 0 2px 4px rgba(0,0,0,0.3);
@@ -243,7 +238,7 @@ h1 { color: #ffd54f; margin-bottom: 20px; }
 
 .scatter-pool {
     position: relative;
-    height: 250px;
+    height: 220px; /* 配合控制台高度 */
     background: #3a2415;
     border-radius: 8px;
     overflow: hidden;
@@ -252,14 +247,12 @@ h1 { color: #ffd54f; margin-bottom: 20px; }
 
 .scatter-piece {
     position: absolute;
-    width: 48px;
-    height: 48px;
+    width: 38px;
+    height: 38px;
     border-radius: 50%;
-    /* 木頭質感的蓋牌背景 */
     background: radial-gradient(circle at center, #8b6914, #4a2f1f);
-    box-shadow: 2px 4px 6px rgba(0,0,0,0.6), inset 0 0 6px #2c1810;
+    box-shadow: 2px 3px 5px rgba(0,0,0,0.6), inset 0 0 5px #2c1810;
     cursor: pointer;
-    /* 加入位置與旋轉的轉場動畫 */
     transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), 
                 top 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), 
                 left 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), 
@@ -269,7 +262,7 @@ h1 { color: #ffd54f; margin-bottom: 20px; }
 }
 
 .scatter-piece:hover {
-    box-shadow: 0 0 15px #ffd54f;
+    box-shadow: 0 0 12px #ffd54f;
     z-index: 100 !important;
 }
 
@@ -288,6 +281,7 @@ h1 { color: #ffd54f; margin-bottom: 20px; }
 <h1>🀄 中國象棋卜卦命盤系統 🀄</h1>
 
 <div class="main-container">
+    <!-- 左側命盤區 -->
     <div class="board-card">
         <div class="stage-sidebar" id="stageSidebar"></div>
         <div class="board-content">
@@ -296,6 +290,7 @@ h1 { color: #ffd54f; margin-bottom: 20px; }
         </div>
     </div>
 
+    <!-- 右側控制台 -->
     <div class="control-panel">
         <h2>📜 命盤卜卦控制台</h2>
 
@@ -308,10 +303,12 @@ h1 { color: #ffd54f; margin-bottom: 20px; }
             <div style="color:#777; font-size:14px;">尚未抽取棋子</div>
         </div>
 
-		<button class="reset-btn" onclick="resetGame()">🔄 重新排盤</button>
-		<button class="reset-btn" onclick="saveResult()">💾 儲存命盤</button>
-		<button class="reset-btn" onclick="loadResult()">📂 載入命盤</button>
-		<button class="reset-btn" onclick="captureBoard()">📸 截圖命盤</button>
+        <div class="btn-group">
+            <button class="reset-btn" onclick="resetGame()">🔄 重新排盤</button>
+            <button class="reset-btn" onclick="saveResult()" style="background:#1976d2;">💾 儲存命盤</button>
+            <button class="reset-btn" onclick="loadResult()" style="background:#388e3c;">📂 載入命盤</button>
+            <button class="reset-btn" onclick="captureBoard()" style="background:#f57c00;">📸 截圖命盤</button>
+        </div>
 
         <div id="completeMsg"></div>
 
@@ -320,30 +317,19 @@ h1 { color: #ffd54f; margin-bottom: 20px; }
         </div>
 
         <div class="hint-text">
-            排列順序規則：點擊下方散落區的任一顆棋子，
-            第一顆棋子會自動固定放置於編號 1 的紅框標示處。
+            排列順序規則：點選下方散落區的任一顆棋子，
+            系統會自動依序排列至命盤中，首顆固定放置於總格中心。
         </div>
 
-        <div class="stage-info-section">
-            <h3>🔮 人生階段對照</h3>
-            <div class="stage-row"><span class="stage-dot" style="background:#4fc3f7;"></span>學習格 <span class="stage-range">11 ~ 20 歲</span></div>
-            <div class="stage-row"><span class="stage-dot" style="background:#ff6ec7;"></span>情感格 <span class="stage-range">21 ~ 30 歲</span></div>
-            <div class="stage-row"><span class="stage-dot" style="background:#ffd54f;"></span>事業格 <span class="stage-range">31 ~ 40 歲</span></div>
-            <div class="stage-row"><span class="stage-dot" style="background:#81c784;"></span>41 ~ 50 歲</div>
-            <div class="stage-row"><span class="stage-dot" style="background:#ba68c8;"></span>51 ~ 60 歲</div>
-            <div class="stage-row"><span class="stage-dot" style="background:#ff8a65;"></span>61 ~ 70 歲</div>
-            <div class="stage-row"><span class="stage-dot" style="background:#90a4ae;"></span>71 歲以後</div>
+        <!-- 散落棋子與洗牌區 (已移入控制台) -->
+        <div class="scatter-section">
+            <div class="scatter-header">
+                <h3>🀄 散落的棋子</h3>
+                <button id="shuffleBtn" class="shuffle-btn" onclick="shuffleScatterPool()">✋ 洗牌 (剩 3 次)</button>
+            </div>
+            <div id="scatterPool" class="scatter-pool"></div>
         </div>
     </div>
-</div>
-
-<!-- 新增：散落棋子與洗牌區 -->
-<div class="scatter-section">
-    <div class="scatter-header">
-        <h3>🀄 散落的棋子 (請點擊選取)</h3>
-        <button id="shuffleBtn" class="shuffle-btn" onclick="shuffleScatterPool()">✋ 模擬洗牌 (剩 3 次)</button>
-    </div>
-    <div id="scatterPool" class="scatter-pool"></div>
 </div>
 
 <script>
@@ -397,7 +383,7 @@ const stageRanges = [
 </script>
 
 <script>
-let remainingPieces = []; // 改為儲存32格陣列，抽掉的位置會變成 null
+let remainingPieces = []; 
 let currentIndex = 0;
 let placedPieces = {}; 
 let shuffleCount = 3;
@@ -443,21 +429,20 @@ function renderSidebar() {
     });
 }
 
-// 渲染下方散落的棋子
 function renderScatterPool() {
     const poolEl = document.getElementById('scatterPool');
     poolEl.innerHTML = '';
     
     remainingPieces.forEach((piece, index) => {
-        if (!piece) return; // 已經被抽取的棋子略過不渲染
+        if (!piece) return;
         
         const pieceEl = document.createElement('div');
         pieceEl.className = 'scatter-piece';
         pieceEl.id = `scatter-piece-${index}`;
         
-        // 隨機分佈：X為 2% ~ 90% (避免超出右邊界)，Y為 5% ~ 75%
-        const left = Math.random() * 88 + 2; 
-        const top = Math.random() * 70 + 5;
+        // 隨機分佈範圍設定在水池範圍內
+        const left = Math.random() * 82 + 3; 
+        const top = Math.random() * 75 + 3;
         const rotate = Math.random() * 360;
         
         pieceEl.style.left = left + '%';
@@ -469,7 +454,6 @@ function renderScatterPool() {
     });
 }
 
-// 模擬雙手洗牌動畫
 function shuffleScatterPool() {
     if (shuffleCount <= 0 || currentIndex >= 32) return;
     
@@ -478,18 +462,18 @@ function shuffleScatterPool() {
 
     const domPieces = document.querySelectorAll('.scatter-piece:not(.drawn)');
     
-    // 第一階段：將所有牌集中到中間
+    // 第一階段：集中到中間
     domPieces.forEach(el => {
         el.style.left = '45%';
         el.style.top = '40%';
         el.style.transform = `rotate(${Math.random() * 360}deg) scale(1.1)`;
     });
 
-    // 第二階段：延遲後再次隨機散開
+    // 第二階段：隨機散開
     setTimeout(() => {
         domPieces.forEach(el => {
-            const left = Math.random() * 88 + 2; 
-            const top = Math.random() * 70 + 5;
+            const left = Math.random() * 82 + 3; 
+            const top = Math.random() * 75 + 3;
             const rotate = Math.random() * 360;
             el.style.left = left + '%';
             el.style.top = top + '%';
@@ -500,24 +484,19 @@ function shuffleScatterPool() {
 
 function updateShuffleBtn() {
     const btn = document.getElementById('shuffleBtn');
-    btn.innerText = `✋ 模擬洗牌 (剩 ${shuffleCount} 次)`;
+    btn.innerText = `✋ 洗牌 (剩 ${shuffleCount} 次)`;
     btn.disabled = (shuffleCount <= 0 || currentIndex >= 32);
 }
 
-// 當點擊散落的特定棋子時觸發
 function drawSpecificPiece(index, el) {
     if (currentIndex >= 32) return;
     
     const piece = remainingPieces[index];
-    if (!piece) return; // 防呆
+    if (!piece) return;
     
-    // 將陣列中該位置設為空
     remainingPieces[index] = null;
-    
-    // 讓被點擊的棋子縮小隱藏
     el.classList.add('drawn');
     
-    // 觸發上盤邏輯
     placePieceOnBoard(piece);
 }
 
@@ -544,6 +523,7 @@ function placePieceOnBoard(piece) {
             `下一步：放置於第 ${currentIndex + 1} 顆`;
     } else {
         document.getElementById('completeMsg').textContent = '✅ 命盤排列完成！';
+        document.getElementById('orderIndicator').textContent = '所有棋子皆已歸位';
         document.getElementById('shuffleBtn').disabled = true;
         generateInterpretation(false);
     }
@@ -623,7 +603,6 @@ function loadResult() {
         return;
     }
 
-    // 載入狀態
     placedPieces = resultToLoad.pieces || {};
     remainingPieces = resultToLoad.pool || [];
     shuffleCount = resultToLoad.shuffleCount !== undefined ? resultToLoad.shuffleCount : 3;
@@ -642,7 +621,7 @@ function loadResult() {
     document.getElementById('completeMsg').textContent = `✅ 命盤「${resultToLoad.name}」已載入`;
 
     renderLoadedBoard();
-    renderScatterPool(); // 還原散落的未抽棋子
+    renderScatterPool(); 
 }
 
 function renderLoadedBoard() {
