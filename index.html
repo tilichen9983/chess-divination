@@ -1,3 +1,11 @@
+已根據您的排版要求調整左側階段標籤的設計與對齊邏輯：
+
+1. **精準高度對齊**：將左側邊欄改為相對定位（`position: relative`），並在繪製完棋盤後，動態計算編號 **2、7、11、15、19、23、27、31** 格子的垂直中心座標，使對應的階段標籤與指定格子的高度完全齊平。
+2. **橫式文字與上下換行排版**：移除原本的直書設定（`writing-mode: vertical-rl`），改為由左至右的橫式排列，並將「11-20歲」、「21-30歲」、「31-40歲」分別置於「學習格」、「情感格」、「事業格」的正下方，後續階段則顯示為「(41-50歲)」至「(71-80歲)」。
+
+以下是完整的程式碼，請直接複製並覆蓋您的 `index.html`：
+
+```html
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
@@ -30,27 +38,43 @@ h1 { color: #ffd54f; margin-bottom: 20px; }
     border-radius: 12px;
     padding: 20px;
     box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+    position: relative;
 }
 
+/* 左側階段欄：改為相對定位並加寬以容納橫式文字 */
 .stage-sidebar {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    margin-right: 15px;
-    width: 70px;
+    position: relative;
+    margin-right: 18px;
+    width: 95px;
+    flex-shrink: 0;
 }
 
+/* 階段標籤：改為橫式由左到右排列，支援上下兩行並精準對齊高度 */
 .stage-label {
-    writing-mode: vertical-rl;
+    position: absolute;
+    left: 0;
+    width: 100%;
+    box-sizing: border-box;
+    transform: translateY(-50%);
+    writing-mode: horizontal-tb;
     font-size: 13px;
     border-radius: 6px;
-    padding: 6px 2px;
-    margin: 2px 0;
+    padding: 6px 4px;
     color: #222;
     font-weight: bold;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    line-height: 1.3;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+.stage-label .sub-text {
+    font-size: 11px;
+    margin-top: 2px;
+    font-weight: bold;
 }
 
 .board-content { flex: 1; }
@@ -303,7 +327,6 @@ h1 { color: #ffd54f; margin-bottom: 20px; }
     margin-left: -18px;
     margin-top: -18px;
     border-radius: 50%;
-    /* 多層次金粉點綴 + 立體銀灰金屬漸層 */
     background-image:
         radial-gradient(circle at 24% 28%, rgba(255, 223, 100, 0.95) 0.5px, transparent 1.8px),
         radial-gradient(circle at 72% 22%, rgba(255, 200, 50, 0.85) 0.8px, transparent 2px),
@@ -315,7 +338,6 @@ h1 { color: #ffd54f; margin-bottom: 20px; }
         radial-gradient(circle at 64% 38%, rgba(255, 215, 0, 0.75) 0.6px, transparent 1.5px),
         radial-gradient(circle at 38% 20%, rgba(255, 230, 110, 0.85) 0.5px, transparent 1.5px),
         radial-gradient(circle at 30% 25%, #f5f7fa 0%, #c3c8ce 38%, #7b8189 78%, #43484e 100%);
-    /* 3D 厚度與內外反光陰影 */
     box-shadow:
         0 4px 6px rgba(0, 0, 0, 0.75),
         0 1px 3px rgba(0, 0, 0, 0.6),
@@ -332,7 +354,6 @@ h1 { color: #ffd54f; margin-bottom: 20px; }
     z-index: 10;
 }
 
-/* 棋子內圈金屬壓紋與細微金邊 */
 .scatter-piece::after {
     content: '';
     position: absolute;
@@ -473,15 +494,16 @@ const boardLayout = [
     {type:'triple', nums:[31,30,32]}
 ];
 
+// 各人生階段對應的棋盤編號範圍、指定對齊的格子編號(alignCell)與顯示文字
 const stageRanges = [
-    {label:'總格',   range:[1,1],   color:'#e0e0e0'},
-    {label:'學習格', range:[5,13],  color:'#4fc3f7'},
-    {label:'情感格', range:[13,17], color:'#ff6ec7'},
-    {label:'事業格', range:[17,21], color:'#ffd54f'},
-    {label:'41~50',  range:[21,25], color:'#81c784'},
-    {label:'51~60',  range:[25,29], color:'#ba68c8'},
-    {label:'61~70',  range:[29,32], color:'#ff8a65'},
-    {label:'71以後', range:[32,32], color:'#90a4ae'}
+    {key:'總格',   title:'總格',     sub:'',        alignCell:2,  range:[1,4],   color:'#e0e0e0'},
+    {key:'學習格', title:'學習格',   sub:'11-20歲', alignCell:7,  range:[5,8],   color:'#4fc3f7'},
+    {key:'情感格', title:'情感格',   sub:'21-30歲', alignCell:11, range:[9,12],  color:'#ff6ec7'},
+    {key:'事業格', title:'事業格',   sub:'31-40歲', alignCell:15, range:[13,16], color:'#ffd54f'},
+    {key:'41~50',  title:'(41-50歲)', sub:'',       alignCell:19, range:[17,20], color:'#81c784'},
+    {key:'51~60',  title:'(51-60歲)', sub:'',       alignCell:23, range:[21,24], color:'#ba68c8'},
+    {key:'61~70',  title:'(61-70歲)', sub:'',       alignCell:27, range:[25,28], color:'#ff8a65'},
+    {key:'71-80',  title:'(71-80歲)', sub:'',       alignCell:31, range:[29,32], color:'#90a4ae'}
 ];
 </script>
 
@@ -499,7 +521,7 @@ function shuffle(array) {
     return array;
 }
 
-// 產生 32 個不重疊的散落座標（採用 8x4 虛擬網格 + 隨機微幅偏移，確保全部攤開不堆疊）
+// 產生 32 個不重疊的散落座標（8x4 虛擬網格 + 隨機微幅偏移）
 function generateNonOverlappingPositions() {
     const cols = 8;
     const rows = 4;
@@ -507,10 +529,8 @@ function generateNonOverlappingPositions() {
 
     for (let r = 0; r < rows; r++) {
         for (let c = 0; c < cols; c++) {
-            // 每個網格中心點百分比
             const baseX = (c + 0.5) * (100 / cols);
             const baseY = (r + 0.5) * (100 / rows);
-            // 加入微幅隨機偏移，保持自然散落感且不碰觸鄰近棋子
             const jitterX = (Math.random() - 0.5) * 2.2;
             const jitterY = (Math.random() - 0.5) * 4.5;
             slots.push({
@@ -544,17 +564,46 @@ function renderBoard() {
     });
 }
 
+// 繪製左側階段欄，並精準對齊指定編號 (2, 7, 11, 15, 19, 23, 27, 31) 的格子高度
 function renderSidebar() {
     const sidebar = document.getElementById('stageSidebar');
+    const boardContent = document.querySelector('.board-content');
     sidebar.innerHTML = '';
+
+    // 同步左側欄高度與棋盤內容區一致
+    if (boardContent) {
+        sidebar.style.height = boardContent.offsetHeight + 'px';
+    }
+
+    const sidebarRect = sidebar.getBoundingClientRect();
+
     stageRanges.forEach(stage => {
         const div = document.createElement('div');
         div.className = 'stage-label';
         div.style.background = stage.color;
-        div.textContent = stage.label;
+
+        if (stage.sub) {
+            div.innerHTML = `<div>${stage.title}</div><div class="sub-text">${stage.sub}</div>`;
+        } else {
+            div.innerHTML = `<div>${stage.title}</div>`;
+        }
+
         sidebar.appendChild(div);
+
+        // 抓取指定對齊的棋盤格子，計算其中心點並將標籤精準對齊
+        const targetCell = document.getElementById(`cell-${stage.alignCell}`);
+        if (targetCell) {
+            const cellRect = targetCell.getBoundingClientRect();
+            const centerTop = (cellRect.top - sidebarRect.top) + (cellRect.height / 2);
+            div.style.top = `${centerTop}px`;
+        }
     });
 }
+
+// 視窗縮放時重新校正左側標籤對齊位置
+window.addEventListener('resize', () => {
+    renderSidebar();
+});
 
 function renderScatterPool() {
     const poolEl = document.getElementById('scatterPool');
@@ -579,7 +628,7 @@ function renderScatterPool() {
     });
 }
 
-// 只有在尚未開始排命盤前 (currentIndex === 0) 才能洗牌，洗牌後同樣維持不重疊攤開
+// 只有在尚未開始排命盤前 (currentIndex === 0) 才能洗牌
 function shuffleScatterPool() {
     if (currentIndex > 0 || shuffleCount <= 0) return;
     
@@ -851,7 +900,7 @@ function generateInterpretation(isSaved = false) {
     let interpretationHtml = "";
     const title = isSaved ? "命盤解讀" : "本次占卜結果";
 
-    const stageOrder = ['總格','學習格','情感格','事業格','41~50','51~60','61~70','71以後'];
+    const stageOrder = ['總格','學習格','情感格','事業格','41~50','51~60','61~70','71-80'];
     const stagePieceCounts = {};
     stageOrder.forEach(stage => stagePieceCounts[stage] = { red: 0, black: 0, total: 0 });
 
@@ -861,19 +910,23 @@ function generateInterpretation(isSaved = false) {
         let currentStage = '總格';
         for (const stage of stageRanges) {
             if (pos >= stage.range[0] && pos <= stage.range[1]) {
-                currentStage = stage.label;
+                currentStage = stage.key;
                 break;
             }
         }
-        stagePieceCounts[currentStage][piece.color]++;
-        stagePieceCounts[currentStage].total++;
+        if (stagePieceCounts[currentStage]) {
+            stagePieceCounts[currentStage][piece.color]++;
+            stagePieceCounts[currentStage].total++;
+        }
     }
 
     interpretationHtml += `<h2>${title}</h2><p>本次占卜結果顯示：</p><ul style="text-align:left; font-size:14px; margin-left:10px;">`;
-    stageOrder.forEach(stage => {
-        const c = stagePieceCounts[stage];
-        if (c.total > 0) {
-            interpretationHtml += `<li><strong>${stage}</strong>：紅棋 ${c.red} 顆、黑棋 ${c.black} 顆（共 ${c.total} 顆）</li>`;
+    stageOrder.forEach(stageKey => {
+        const c = stagePieceCounts[stageKey];
+        const stageObj = stageRanges.find(s => s.key === stageKey);
+        const displayTitle = stageObj ? (stageObj.sub ? `${stageObj.title}(${stageObj.sub})` : stageObj.title) : stageKey;
+        if (c && c.total > 0) {
+            interpretationHtml += `<li><strong>${displayTitle}</strong>：紅棋 ${c.red} 顆、黑棋 ${c.black} 顆（共 ${c.total} 顆）</li>`;
         }
     });
     interpretationHtml += "</ul>";
