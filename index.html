@@ -119,11 +119,20 @@ h1 { color: #ffd54f; margin-bottom: 20px; }
     z-index: 5;
 }
 
+/* 1-32 數字適當加大並置於命盤棋子格正中央 */
 .cell-number {
     position: absolute;
-    top: -18px;
-    font-size: 11px;
-    color: #ffd54f;
+    font-size: 18px;
+    font-weight: bold;
+    color: rgba(255, 213, 79, 0.85);
+    pointer-events: none;
+    user-select: none;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+/* 當格子已翻開放入棋子後，隱藏原本底部的編號 */
+.cell:not(.covered) .cell-number {
+    display: none;
 }
 
 .chess-piece {
@@ -142,6 +151,7 @@ h1 { color: #ffd54f; margin-bottom: 20px; }
     border: 2px solid;
     transform-style: preserve-3d;
     transition: transform 0.6s;
+    z-index: 2;
 }
 
 .chess-piece.red {
@@ -391,7 +401,7 @@ h1 { color: #ffd54f; margin-bottom: 20px; }
 </head>
 <body>
 
-<h1>象棋卜卦</h1>
+<h1>象棋卜卦解憂室</h1>
 
 <div class="main-container">
     <!-- 左側命盤區 -->
@@ -486,16 +496,16 @@ const boardLayout = [
     {type:'triple', nums:[31,30,32]}
 ];
 
-// 各人生階段對應的棋盤編號範圍、指定對齊的格子編號(alignCell)與顯示文字
+// 各人生階段對應的棋盤編號範圍、指定對齊的格子編號(alignCell)與顯示文字（已移除41-80歲的括號）
 const stageRanges = [
-    {key:'總格',   title:'總格',     sub:'',        alignCell:2,  range:[1,4],   color:'#e0e0e0'},
-    {key:'學習格', title:'學習格',   sub:'11-20歲', alignCell:7,  range:[5,8],   color:'#4fc3f7'},
-    {key:'情感格', title:'情感格',   sub:'21-30歲', alignCell:11, range:[9,12],  color:'#ff6ec7'},
-    {key:'事業格', title:'事業格',   sub:'31-40歲', alignCell:15, range:[13,16], color:'#ffd54f'},
-    {key:'41~50',  title:'(41-50歲)', sub:'',       alignCell:19, range:[17,20], color:'#81c784'},
-    {key:'51~60',  title:'(51-60歲)', sub:'',       alignCell:23, range:[21,24], color:'#ba68c8'},
-    {key:'61~70',  title:'(61-70歲)', sub:'',       alignCell:27, range:[25,28], color:'#ff8a65'},
-    {key:'71-80',  title:'(71-80歲)', sub:'',       alignCell:31, range:[29,32], color:'#90a4ae'}
+    {key:'總格',   title:'總格',   sub:'',        alignCell:2,  range:[1,4],   color:'#e0e0e0'},
+    {key:'學習格', title:'學習格', sub:'11-20歲', alignCell:7,  range:[5,8],   color:'#4fc3f7'},
+    {key:'情感格', title:'情感格', sub:'21-30歲', alignCell:11, range:[9,12],  color:'#ff6ec7'},
+    {key:'事業格', title:'事業格', sub:'31-40歲', alignCell:15, range:[13,16], color:'#ffd54f'},
+    {key:'41~50',  title:'41-50歲', sub:'',       alignCell:19, range:[17,20], color:'#81c784'},
+    {key:'51~60',  title:'51-60歲', sub:'',       alignCell:23, range:[21,24], color:'#ba68c8'},
+    {key:'61~70',  title:'61-70歲', sub:'',       alignCell:27, range:[25,28], color:'#ff8a65'},
+    {key:'71-80',  title:'71-80歲', sub:'',       alignCell:31, range:[29,32], color:'#90a4ae'}
 ];
 </script>
 
