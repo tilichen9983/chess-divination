@@ -344,8 +344,9 @@
 
         <div class="hint-text">
             排列順序規則：<br>
-            每次翻開棋子後，依照「中 → 左 → 右 → 上 → 下」
-            的順序，由中軸線開始向外擴展排列，直到 32 個位置全部排滿。
+            每次翻開棋子後，由中軸線「第二顆」棋開始，
+            依照「中 → 左 → 右 → 上 → 下」的順序向外擴展排列，
+            直到 32 個位置全部排滿。
         </div>
 
         <button class="toggle-example" onclick="toggleExample()">📖 顯示 / 隱藏 範例圖</button>
@@ -355,7 +356,7 @@
 <div class="example-section" id="exampleSection" style="display:none;">
     <h3>範例命盤參考圖</h3>
     <p style="font-size:13px;color:#666;margin-bottom:10px;">
-        此為完整排列 32 顆棋子後的命盤範例，供排盤時參考棋子分布邏輯（中軸線上下 + 左右對稱延伸）。
+        此為完整排列 32 顆棋子後的命盤範例，供排盤時參考棋子分布邏輯（由中軸線第二顆開始向外延伸）。
     </p>
     <img src="example-board.jpg" alt="命盤範例圖" class="example-img"
          onerror="this.style.display='none'; this.insertAdjacentHTML('afterend', '<p style=\'color:#999;text-align:center;padding:20px;\'>（請放置您的範例圖片 example-board.jpg）</p>')">
@@ -388,34 +389,34 @@ const boardLayout = [
     {type:'single'}, {type:'triple'}, {type:'single'}, {type:'triple'}
 ];
 
-// ===================== 生成「中左右上下」填充順序 =====================
+// ===================== 生成「中左右上下」填充順序（修正版） =====================
 function generateFillOrder() {
     const order = [];
-    const midPoint = Math.floor(boardLayout.length / 2);
-    const centerOrderIdx = [];
-    let up = midPoint, down = midPoint + 1;
+    const totalRows = boardLayout.length;
 
-    while (up >= 0 || down < boardLayout.length) {
-        if (up >= 0) { centerOrderIdx.push(up); up--; }
-        if (down < boardLayout.length) { centerOrderIdx.push(down); down++; }
+    // 中軸線「第二顆」棋的位置：索引為 1（也就是第 2 列）
+    const startRow = 1;
+
+    // 建立「上下交錯擴展」的列順序：以 startRow 為起點，往下、往上交錯延伸
+    const rowSequence = [];
+    let down = startRow, up = startRow - 1;
+
+    while (down < totalRows || up >= 0) {
+        if (down < totalRows) { rowSequence.push(down); down++; }
+        if (up >= 0) { rowSequence.push(up); up--; }
     }
 
-    // Step 1: 中軸線
-    centerOrderIdx.forEach(idx => {
-        order.push({row: idx, pos: 'center'});
-    });
+    // 依序對每一列，按照「中 → 左 → 右」的順序加入填充序列
+    rowSequence.forEach(rowIdx => {
+        const row = boardLayout[rowIdx];
 
-    // Step 2: 左側
-    centerOrderIdx.forEach(idx => {
-        if (boardLayout[idx].type === 'triple') {
-            order.push({row: idx, pos: 'left'});
-        }
-    });
+        // 中
+        order.push({row: rowIdx, pos: 'center'});
 
-    // Step 3: 右側
-    centerOrderIdx.forEach(idx => {
-        if (boardLayout[idx].type === 'triple') {
-            order.push({row: idx, pos: 'right'});
+        // 左、右（僅限 triple 類型的列才有左右位置）
+        if (row.type === 'triple') {
+            order.push({row: rowIdx, pos: 'left'});
+            order.push({row: rowIdx, pos: 'right'});
         }
     });
 
