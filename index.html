@@ -468,29 +468,12 @@ function captureBoard() {
     });
 }
 
-function isLocalStorageAvailable() {
-    try {
-        const testKey = '__test_storage__';
-        localStorage.setItem(testKey, '1');
-        localStorage.removeItem(testKey);
-        return true;
-    } catch (e) {
-        console.error('localStorage 無法使用：', e);
-        return false;
-    }
-}
-
 function saveResult() {
-    if (!isLocalStorageAvailable()) {
-        alert('偵測到您的瀏覽器無法使用本機儲存功能，請確認：\n1. 是否處於無痕瀏覽模式\n2. 是否透過 file:// 直接開啟網頁\n3. 是否有隱私防護擴充功能阻擋');
-        return;
-    }
-
     const name = prompt("請為您的命盤命名（例如：2026生涯占卜）:");
-    if (!name || !name.trim()) return;
+    if (!name) return;
 
     const resultData = {
-        name: name.trim(),
+        name: name,
         timestamp: new Date().toISOString(),
         pieces: placedPieces
     };
@@ -499,45 +482,21 @@ function saveResult() {
     savedResults.push(resultData);
     localStorage.setItem('chessDivinationResults', JSON.stringify(savedResults));
 
-    console.log('[儲存命盤] 目前儲存總筆數：', savedResults.length, savedResults);
-    alert(`命盤「${resultData.name}」已儲存！目前共有 ${savedResults.length} 筆紀錄。`);
+    alert(`命盤「${name}」已儲存！`);
     generateInterpretation(true);
-
-    }
-
+}
 
 function loadResult() {
-    if (!isLocalStorageAvailable()) {
-        alert('偵測到您的瀏覽器無法使用本機儲存功能，無法載入先前儲存的命盤。');
+    let savedResults = JSON.parse(localStorage.getItem('chessDivinationResults') || '[]');
+    if (savedResults.length === 0) {
+        alert("沒有已儲存的命盤紀錄。");
         return;
     }
-
-    const rawData = localStorage.getItem('chessDivinationResults');
-    console.log('[載入命盤] 讀取到的原始字串：', rawData);
-
-    let savedResults = [];
-    try {
-        savedResults = JSON.parse(rawData || '[]');
-    } catch (e) {
-        console.error('[載入命盤] JSON 解析失敗：', e);
-        alert('讀取紀錄時發生格式錯誤，建議清除瀏覽器快取後重新儲存。');
-        return;
-    }
-
-    if (!savedResults || savedResults.length === 0) {
-        alert("沒有已儲存的命盤紀錄。\n\n請檢查：\n1. 目前網址列是否與先前儲存時相同（同一個 http/https 來源）\n2. 是否使用無痕模式瀏覽\n3. 是否直接雙擊 HTML 檔案開啟（建議改用本機伺服器開啟）");
-        return;
-    }
-
     const savedNames = savedResults.map(r => r.name);
     const selectedName = prompt(`請選擇要載入的命盤：\n${savedNames.join('\n')}`);
-    if (!selectedName) return;
-
-    const trimmedInput = selectedName.trim();
-    const resultToLoad = savedResults.find(r => r.name.trim() === trimmedInput);
-
+    const resultToLoad = savedResults.find(r => r.name === selectedName);
     if (!resultToLoad) {
-        alert("找不到該命盤紀錄，請確認輸入的名稱與列表完全一致。");
+        alert("找不到該命盤紀錄。");
         return;
     }
 
@@ -550,7 +509,6 @@ function loadResult() {
     renderLoadedBoard();
     alert(`命盤「${resultToLoad.name}」已載入。`);
 }
-
 
 function renderLoadedBoard() {
     const grid = document.getElementById('boardGrid');
