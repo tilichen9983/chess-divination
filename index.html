@@ -286,3 +286,166 @@ h1 { color: #ffd54f; margin-bottom: 20px; }
         </div>
     </div>
 </div>
+
+<script>
+// ===================== 棋子資料設定 =====================
+const pieceSet = [
+    {name:'帥', color:'red'},
+    {name:'仕', color:'red'}, {name:'仕', color:'red'},
+    {name:'相', color:'red'}, {name:'相', color:'red'},
+    {name:'俥', color:'red'}, {name:'俥', color:'red'},
+    {name:'傌', color:'red'}, {name:'傌', color:'red'},
+    {name:'炮', color:'red'}, {name:'炮', color:'red'},
+    {name:'兵', color:'red'}, {name:'兵', color:'red'}, {name:'兵', color:'red'}, {name:'兵', color:'red'}, {name:'兵', color:'red'},
+    {name:'將', color:'black'},
+    {name:'士', color:'black'}, {name:'士', color:'black'},
+    {name:'象', color:'black'}, {name:'象', color:'black'},
+    {name:'車', color:'black'}, {name:'車', color:'black'},
+    {name:'馬', color:'black'}, {name:'馬', color:'black'},
+    {name:'包', color:'black'}, {name:'包', color:'black'},
+    {name:'卒', color:'black'}, {name:'卒', color:'black'}, {name:'卒', color:'black'}, {name:'卒', color:'black'}, {name:'卒', color:'black'}
+];
+
+// ===================== 命盤結構定義（依據圖片 1~32 編號佈局）=====================
+// 列1: 4(single)
+// 列2: 2 1 3（起始列，1 為中心起點／總格）
+// 列3: 5(single)
+// 列4: 7 6 8           <-- 學習格 11~20歲 對照起始
+// 列5: 9(single)
+// 列6: 11 10 12        <-- 學習格
+// 列7: 13(single)      <-- 情感格
+// 列8: 15 14 16        <-- 情感格
+// 列9: 17(single)
+// 列10: 19 18 20       <-- 事業格 31~40歲
+// 列11: 21(single)     <-- 41~50歲
+// 列12: 23 22 24
+// 列13: 25(single)     <-- 51~60歲
+// 列14: 27 26 28
+// 列15: 29(single)     <-- 61~70歲
+// 列16: 31 30 32       <-- 71歲以後
+
+const boardLayout = [
+    {type:'single', nums:[4]},
+    {type:'triple', nums:[2,1,3]},
+    {type:'single', nums:[5]},
+    {type:'triple', nums:[7,6,8]},
+    {type:'single', nums:[9]},
+    {type:'triple', nums:[11,10,12]},
+    {type:'single', nums:[13]},
+    {type:'triple', nums:[15,14,16]},
+    {type:'single', nums:[17]},
+    {type:'triple', nums:[19,18,20]},
+    {type:'single', nums:[21]},
+    {type:'triple', nums:[23,22,24]},
+    {type:'single', nums:[25]},
+    {type:'triple', nums:[27,26,28]},
+    {type:'single', nums:[29]},
+    {type:'triple', nums:[31,30,32]}
+];
+
+// 各人生階段對應的棋盤編號範圍（左側標示用）
+const stageRanges = [
+    {label:'總格',   range:[1,1],   color:'#e0e0e0'},
+    {label:'學習格', range:[5,13],  color:'#4fc3f7'},
+    {label:'情感格', range:[13,17], color:'#ff6ec7'},
+    {label:'事業格', range:[17,21], color:'#ffd54f'},
+    {label:'41~50',  range:[21,25], color:'#81c784'},
+    {label:'51~60',  range:[25,29], color:'#ba68c8'},
+    {label:'61~70',  range:[29,32], color:'#ff8a65'},
+    {label:'71以後', range:[32,32], color:'#90a4ae'}
+];
+</script>
+
+<script>
+let pool = [];
+let currentIndex = 0;
+
+function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
+function renderBoard() {
+    const grid = document.getElementById('boardGrid');
+    grid.innerHTML = '';
+    boardLayout.forEach(row => {
+        const rowDiv = document.createElement('div');
+        rowDiv.className = 'board-row';
+        row.nums.forEach(num => {
+            const cell = document.createElement('div');
+            cell.className = 'cell covered';
+            cell.id = `cell-${num}`;
+            if (num === 1) cell.classList.add('start-cell');
+            const label = document.createElement('span');
+            label.className = 'cell-number';
+            label.textContent = num;
+            cell.appendChild(label);
+            rowDiv.appendChild(cell);
+        });
+        grid.appendChild(rowDiv);
+    });
+}
+
+function renderSidebar() {
+    const sidebar = document.getElementById('stageSidebar');
+    sidebar.innerHTML = '';
+    stageRanges.forEach(stage => {
+        const div = document.createElement('div');
+        div.className = 'stage-label';
+        div.style.background = stage.color;
+        div.textContent = stage.label;
+        sidebar.appendChild(div);
+    });
+}
+
+function drawPiece() {
+    if (pool.length === 0 || currentIndex >= 32) return;
+
+    const piece = pool.pop();
+    const position = currentIndex + 1;
+    const cell = document.getElementById(`cell-${position}`);
+
+    cell.classList.remove('covered');
+
+    const pieceEl = document.createElement('div');
+    pieceEl.className = `chess-piece ${piece.color} flip-animate`;
+    pieceEl.textContent = piece.name;
+    cell.appendChild(pieceEl);
+
+    document.getElementById('drawnDisplay').innerHTML =
+        `<div class="chess-piece ${piece.color}" style="margin:0 auto;">${piece.name}</div>`;
+
+    currentIndex++;
+    document.getElementById('poolCount').textContent = pool.length;
+
+    if (currentIndex < 32) {
+        document.getElementById('orderIndicator').textContent =
+            `下一步：放置於第 ${currentIndex + 1} 顆`;
+    } else {
+        document.getElementById('completeMsg').textContent = '✅ 命盤排列完成！';
+        document.getElementById('drawBtn').disabled = true;
+    }
+}
+
+function resetGame() {
+    pool = shuffle([...pieceSet]);
+    currentIndex = 0;
+    document.getElementById('poolCount').textContent = 32;
+    document.getElementById('completeMsg').textContent = '';
+    document.getElementById('drawBtn').disabled = false;
+    document.getElementById('drawnDisplay').innerHTML =
+        '<div style="color:#777; font-size:14px;">尚未抽取棋子</div>';
+    document.getElementById('orderIndicator').textContent =
+        '下一步：放置於第 1 顆（紅框標示處）';
+    renderBoard();
+    renderSidebar();
+}
+
+window.onload = resetGame;
+</script>
+</body>
+</html>
+
