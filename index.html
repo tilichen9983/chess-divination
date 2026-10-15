@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>中國象棋卜卦系統</title>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "微軟正黑體", "PingFang TC", sans-serif;
+    }
+
+    body {
+        background: #8B5A2B;
+        background-image: 
+            repeating-linear-gradient(90deg, 
+                rgba(0,0,0,0.05) 0px, 
+                rgba(0,0,0,0.05) 1px, 
+                transparent 1px, 
+                transparent 40px);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+    }
+
+    h1 {
+        color: #fff;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        margin-bottom: 20px;
+        font-size: 28px;
+    }
+
+    .main-container {
+        display: flex;
+        gap: 30px;
+        flex-wrap: wrap;
+        justify-content: center;
+        max-width: 1400px;
+        width: 100%;
+    }
+
+    .board-container {
+        background: linear-gradient(135deg, #5cb85c, #4a9d4a);
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+        position: relative;
+        width: 500px;
+        min-height: 650px;
+    }
+
+    .river-labels {
+        position: absolute;
+        left: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        display: flex;
+        flex-direction: column;
+        gap: 150px;
+        color: #2d2d2d;
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    .board-grid {
+        position: relative;
+        margin-left: 60px;
+        border: 2px solid #2d2d2d;
+        width: 380px;
+        height: 580px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+        padding: 10px 0;
+    }
+
+    .slot-row {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        height: 42px;
+    }
+
+    .row-with-sides {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        justify-content: center;
+    }
+
+    .slot {
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s;
+        border: 2px dashed #999;
+        background: rgba(255,255,255,0.1);
+    }
+
+    .slot.empty:hover {
+        background: rgba(255,255,255,0.3);
+        transform: scale(1.1);
+    }
+
+    .slot.filled {
+        border: 2px solid #8B4513;
+        background: #fff8e7;
+        cursor: default;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        animation: popIn 0.4s ease;
+    }
+
+    @keyframes popIn {
+        0% { transform: scale(0.3); opacity: 0; }
+        70% { transform: scale(1.15); }
+        100% { transform: scale(1); opacity: 1; }
+    }
+
+    .slot.filled.red { color: #d32f2f; }
+    .slot.filled.black { color: #212121; }
+
+    .control-panel {
+        background: #fff;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        width: 320px;
+        height: fit-content;
+    }
+
+    .control-panel h2 {
+        color: #333;
+        margin-bottom: 15px;
+        font-size: 20px;
+        border-bottom: 2px solid #8B4513;
+        padding-bottom: 8px;
+    }
+
+    .pool-info {
+        background: #f5f5f5;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 15px;
+        text-align: center;
+    }
+
+    .pool-count {
+        font-size: 36px;
+        font-weight: bold;
+        color: #8B4513;
+    }
+
+    .pool-label {
+        font-size: 14px;
+        color: #666;
+    }
+
+    .draw-btn {
+        width: 100%;
+        padding: 15px;
+        background: linear-gradient(135deg, #d32f2f, #b71c1c);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+        margin-bottom: 10px;
+        transition: all 0.3s;
+        box-shadow: 0 4px 10px rgba(211, 47, 47, 0.4);
+    }
+
+    .draw-btn:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(211, 47, 47, 0.5);
+    }
+
+    .draw-btn:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+        box-shadow: none;
+    }
+
+    .reset-btn {
+        width: 100%;
+        padding: 12px;
+        background: #607d8b;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+        margin-bottom: 15px;
+        transition: all 0.3s;
+    }
+
+    .reset-btn:hover {
+        background: #455a64;
+    }
+
+    .drawn-piece-display {
+        text-align: center;
+        padding: 20px;
+        background: #fffbe6;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        border: 2px dashed #d4af37;
+        min-height: 100px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .drawn-piece {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        background: #fff8e7;
+        border: 3px solid #8B4513;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        font-weight: bold;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        animation: flip 0.6s ease;
+    }
+
+    @keyframes flip {
+        0% { transform: rotateY(0deg) scale(0.5); opacity: 0; }
+        50% { transform: rotateY(90deg) scale(1.1); }
+        100% { transform: rotateY(360deg) scale(1); opacity: 1; }
+    }
+
+    .drawn-piece.red { color: #d32f2f; }
+    .drawn-piece.black { color: #212121; }
+
+    .hint-text {
+        font-size: 13px;
+        color: #888;
+        margin-top: 10px;
+        line-height: 1.6;
+    }
+
+    .order-indicator {
+        font-size: 15px;
+        color: #8B4513;
+        font-weight: bold;
+        margin-top: 8px;
+        text-align: center;
+    }
+
+    .example-section {
+        margin-top: 30px;
+        background: #fff;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        max-width: 500px;
+        width: 100%;
+    }
+
+    .example-section h3 {
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    .example-img {
+        width: 100%;
+        border-radius: 8px;
+        border: 2px solid #ddd;
+    }
+
+    .toggle-example {
+        background: #8B4513;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 6px;
+        cursor: pointer;
+        margin-bottom: 15px;
+        font-size: 14px;
+    }
+
+    .complete-message {
+        background: #e8f5e9;
+        border: 2px solid #4caf50;
+        border-radius: 8px;
+        padding: 15px;
+        text-align: center;
+        color: #2e7d32;
+        font-weight: bold;
+        margin-bottom: 15px;
+    }
+</style>
+</head>
+<body>
+
+<h1>🀄 中國象棋卜卦命盤系統 🀄</h1>
+
+<div class="main-container">
+    <div class="board-container">
+        <div class="river-labels">
+            <span>楚</span>
+            <span>河</span>
+            <span>漢</span>
+            <span>界</span>
+        </div>
+        <div class="board-grid" id="boardGrid"></div>
+    </div>
+
+    <div class="control-panel">
+        <h2>📜 命盤卜卦控制台</h2>
+
+        <div class="pool-info">
+            <div class="pool-count" id="poolCount">32</div>
+            <div class="pool-label">剩餘棋子（蓋住中）</div>
+        </div>
+
+        <div class="drawn-piece-display" id="drawnDisplay">
+            <div style="color:#999; font-size:14px;">尚未抽取棋子</div>
+        </div>
+
+        <button class="draw-btn" id="drawBtn" onclick="drawPiece()">🎲 翻開棋子</button>
+        <button class="reset-btn" onclick="resetGame()">🔄 重新排盤</button>
+
+        <div id="completeMsg"></div>
+
+        <div class="order-indicator" id="orderIndicator">
+            下一步：放置於「中」位
+        </div>
+
+        <div class="hint-text">
+            排列順序規則：<br>
+            每次翻開棋子後，依照「中 → 左 → 右 → 上 → 下」
+            的順序，由中軸線開始向外擴展排列，直到 32 個位置全部排滿。
+        </div>
+
+        <button class="toggle-example" onclick="toggleExample()">📖 顯示 / 隱藏 範例圖</button>
+    </div>
+</div>
+
+<div class="example-section" id="exampleSection" style="display:none;">
+    <h3>範例命盤參考圖</h3>
+    <p style="font-size:13px;color:#666;margin-bottom:10px;">
+        此為完整排列 32 顆棋子後的命盤範例，供排盤時參考棋子分布邏輯（中軸線上下 + 左右對稱延伸）。
+    </p>
+    <img src="example-board.jpg" alt="命盤範例圖" class="example-img"
+         onerror="this.style.display='none'; this.insertAdjacentHTML('afterend', '<p style=\'color:#999;text-align:center;padding:20px;\'>（請放置您的範例圖片 example-board.jpg）</p>')">
+</div>
+
+<script>
+// ===================== 棋子資料設定 =====================
+const pieceSet = [
+    {name:'帥', color:'red'},
+    {name:'仕', color:'red'}, {name:'仕', color:'red'},
+    {name:'相', color:'red'}, {name:'相', color:'red'},
+    {name:'俥', color:'red'}, {name:'俥', color:'red'},
+    {name:'傌', color:'red'}, {name:'傌', color:'red'},
+    {name:'炮', color:'red'}, {name:'炮', color:'red'},
+    {name:'兵', color:'red'}, {name:'兵', color:'red'}, {name:'兵', color:'red'}, {name:'兵', color:'red'}, {name:'兵', color:'red'},
+    {name:'將', color:'black'},
+    {name:'士', color:'black'}, {name:'士', color:'black'},
+    {name:'象', color:'black'}, {name:'象', color:'black'},
+    {name:'車', color:'black'}, {name:'車', color:'black'},
+    {name:'馬', color:'black'}, {name:'馬', color:'black'},
+    {name:'包', color:'black'}, {name:'包', color:'black'},
+    {name:'卒', color:'black'}, {name:'卒', color:'black'}, {name:'卒', color:'black'}, {name:'卒', color:'black'}, {name:'卒', color:'black'}
+];
+
+// ===================== 命盤排列結構定義 =====================
+const boardLayout = [
+    {type:'single'}, {type:'triple'}, {type:'single'}, {type:'triple'},
+    {type:'single'}, {type:'triple'}, {type:'single'}, {type:'triple'},
+    {type:'single'}, {type:'triple'}, {type:'single'}, {type:'triple'},
+    {type:'single'}, {type:'triple'}, {type:'single'}, {type:'triple'}
+];
+
+// ===================== 生成「中左右上下」填充順序 =====================
+function generateFillOrder() {
+    const order = [];
+    const midPoint = Math.floor(boardLayout.length / 2);
+    const centerOrderIdx = [];
+    let up = midPoint, down = midPoint + 1;
+
+    while (up >= 0 || down < boardLayout.length) {
+        if (up >= 0) { centerOrderIdx.push(up); up--; }
+        if (down < boardLayout.length) { centerOrderIdx.push(down); down++; }
+    }
+
+    // Step 1: 中軸線
+    centerOrderIdx.forEach(idx => {
+        order.push({row: idx, pos: 'center'});
+    });
+
+    // Step 2: 左側
+    centerOrderIdx.forEach(idx => {
+        if (boardLayout[idx].type === 'triple') {
+            order.push({row: idx, pos: 'left'});
+        }
+    });
+
+    // Step 3: 右側
+    centerOrderIdx.forEach(idx => {
+        if (boardLayout[idx].type === 'triple') {
+            order.push({row: idx, pos: 'right'});
+        }
+    });
+
+    return order;
+}
+
+const fillOrder = generateFillOrder();
+
+// ===================== 遊戲狀態變數 =====================
+let shuffledPieces = [];
+let drawnCount = 0;
+let placedPieces = {};
+
+// ===================== 洗牌函式 (Fisher-Yates) =====================
+function shuffle(array) {
+    const arr = [...array];
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+
+// ===================== 初始化遊戲 =====================
+function initGame() {
+    shuffledPieces = shuffle(pieceSet);
+    drawnCount = 0;
+    placedPieces = {};
+    renderBoard();
+    updatePoolCount();
+    updateOrderIndicator();
+    document.getElementById('drawnDisplay').innerHTML =
+        '<div style="color:#999; font-size:14px;">尚未抽取棋子</div>';
+    document.getElementById('drawBtn').disabled = false;
+    document.getElementById('completeMsg').innerHTML = '';
+}
+
+function updatePoolCount() {
+    document.getElementById('poolCount').textContent = 32 - drawnCount;
+}
+
+function positionLabel(pos) {
+    if (pos === 'center') return '中';
+    if (pos === 'left') return '左';
+    if (pos === 'right') return '右';
+}
+
+function updateOrderIndicator() {
+    const indicator = document.getElementById('orderIndicator');
+    if (drawnCount >= 32) {
+        indicator.textContent = '✅ 命盤已排滿！';
+        return;
+    }
+    const next = fillOrder[drawnCount];
+    const rowNum = next.row + 1;
+    indicator.textContent = `下一步：放置於「${positionLabel(next.pos)}」位（第 ${rowNum} 列）`;
+}
+
+// ===================== 翻開棋子主邏輯 =====================
+function drawPiece() {
+    if (drawnCount >= 32) return;
+
+    const piece = shuffledPieces[drawnCount];
+    const target = fillOrder[drawnCount];
+    const key = `${target.row}-${target.pos}`;
+    placedPieces[key] = piece;
+
+    const display = document.getElementById('drawnDisplay');
+    display.innerHTML = `
+        <div class="drawn-piece ${piece.color}">${piece.name}</div>
+        <div style="margin-top:8px; font-size:13px; color:#666;">
+            放置於：第 ${target.row+1} 列「${positionLabel(target.pos)}」位
+        </div>
+    `;
+
+    drawnCount++;
+    updatePoolCount();
+    renderBoard();
+    updateOrderIndicator();
+
+    if (drawnCount >= 32) {
+        document.getElementById('drawBtn').disabled = true;
+        document.getElementById('completeMsg').innerHTML =
+            '<div class="complete-message">🎉 命盤排列完成！可對照範例圖解讀卦象</div>';
+    }
+}
+
+// ===================== 重新排盤 =====================
+function resetGame() {
+    if (confirm('確定要重新排盤嗎？目前的命盤將會清空重來。')) {
+        initGame();
+    }
+}
+
+// ===================== 渲染命盤 =====================
+function renderBoard() {
+    const grid = document.getElementById('boardGrid');
+    grid.innerHTML = '';
+
+    boardLayout.forEach((row, idx) => {
+        const rowDiv = document.createElement('div');
+        rowDiv.className = row.type === 'single' ? 'slot-row' : 'row-with-sides';
+
+        if (row.type === 'single') {
+            rowDiv.appendChild(createSlot(idx, 'center'));
+        } else {
+            rowDiv.appendChild(createSlot(idx, 'left'));
+            rowDiv.appendChild(createSlot(idx, 'center'));
+            rowDiv.appendChild(createSlot(idx, 'right'));
+        }
+
+        grid.appendChild(rowDiv);
+    });
+}
+
+function createSlot(row, pos) {
+    const key = `${row}-${pos}`;
+    const slot = document.createElement('div');
+    const piece = placedPieces[key];
+
+    if (piece) {
+        slot.className = `slot filled ${piece.color}`;
+        slot.textContent = piece.name;
+    } else {
+        slot.className = 'slot empty';
+    }
+
+    return slot;
+}
+
+// ===================== 顯示/隱藏範例圖 =====================
+function toggleExample() {
+    const section = document.getElementById('exampleSection');
+    section.style.display = section.style.display === 'none' ? 'block' : 'none';
+}
+
+// ===================== 啟動遊戲 =====================
+initGame();
+</script>
+</body>
+</html>
