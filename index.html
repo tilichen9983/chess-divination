@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>中國象棋卜卦系統</title>
+<title>中國象棋卜卦命盤系統</title>
 <style>
     * {
         margin: 0;
@@ -13,13 +13,7 @@
     }
 
     body {
-        background: #8B5A2B;
-        background-image: 
-            repeating-linear-gradient(90deg, 
-                rgba(0,0,0,0.05) 0px, 
-                rgba(0,0,0,0.05) 1px, 
-                transparent 1px, 
-                transparent 40px);
+        background: radial-gradient(ellipse at center, #1a1a2e 0%, #0d0d17 100%);
         min-height: 100vh;
         display: flex;
         flex-direction: column;
@@ -28,10 +22,11 @@
     }
 
     h1 {
-        color: #fff;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        color: #f0d98c;
+        text-shadow: 0 0 10px rgba(240,217,140,0.6), 2px 2px 4px rgba(0,0,0,0.8);
         margin-bottom: 20px;
         font-size: 28px;
+        letter-spacing: 2px;
     }
 
     .main-container {
@@ -39,108 +34,173 @@
         gap: 30px;
         flex-wrap: wrap;
         justify-content: center;
-        max-width: 1400px;
+        max-width: 1500px;
         width: 100%;
     }
 
-    .board-container {
-        background: linear-gradient(135deg, #5cb85c, #4a9d4a);
-        border-radius: 8px;
-        padding: 20px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    /* ===================== 命盤卡片容器 ===================== */
+    .board-card {
+        background: radial-gradient(ellipse at top, #2a1f3d 0%, #0d0d17 80%);
+        border-radius: 24px;
+        padding: 30px 20px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.7), inset 0 0 60px rgba(100,80,200,0.1);
         position: relative;
-        width: 500px;
-        min-height: 650px;
+        width: 460px;
+        border: 1px solid rgba(255,255,255,0.1);
     }
 
-    .river-labels {
-        position: absolute;
-        left: 20px;
-        top: 50%;
-        transform: translateY(-50%);
-        display: flex;
-        flex-direction: column;
-        gap: 150px;
-        color: #2d2d2d;
-        font-size: 24px;
-        font-weight: bold;
+    .board-title {
+        text-align: center;
+        color: #d4af37;
+        font-size: 18px;
+        margin-bottom: 10px;
+        letter-spacing: 4px;
     }
 
     .board-grid {
-        position: relative;
-        margin-left: 60px;
-        border: 2px solid #2d2d2d;
-        width: 380px;
-        height: 580px;
         display: flex;
         flex-direction: column;
-        justify-content: space-evenly;
+        align-items: center;
+        gap: 6px;
+        position: relative;
         padding: 10px 0;
     }
 
-    .slot-row {
+    .stage-label {
+        text-align: center;
+        font-size: 12px;
+        color: #9f8fff;
+        margin: 4px 0 2px;
+        letter-spacing: 2px;
+        text-shadow: 0 0 6px rgba(159,143,255,0.5);
+        opacity: 0.85;
+    }
+
+    .row-wrap {
         display: flex;
         justify-content: center;
         align-items: center;
-        gap: 8px;
-        height: 42px;
+        gap: 10px;
     }
 
-    .row-with-sides {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        justify-content: center;
+    /* ===================== 3D 立體棋子格 ===================== */
+    .slot-3d {
+        width: 48px;
+        height: 48px;
+        perspective: 600px;
+        position: relative;
     }
 
-    .slot {
-        width: 46px;
-        height: 46px;
+    .slot-inner {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        transform-style: preserve-3d;
+        transition: transform 0.7s cubic-bezier(.2,.9,.3,1.2);
+        cursor: pointer;
+    }
+
+    .slot-3d.flipped .slot-inner {
+        transform: rotateY(180deg);
+    }
+
+    .slot-face {
+        position: absolute;
+        width: 100%;
+        height: 100%;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 18px;
+        backface-visibility: hidden;
         font-weight: bold;
-        cursor: pointer;
-        transition: all 0.3s;
-        border: 2px dashed #999;
-        background: rgba(255,255,255,0.1);
+        font-size: 18px;
     }
 
-    .slot.empty:hover {
-        background: rgba(255,255,255,0.3);
-        transform: scale(1.1);
+    /* 背面（未翻開，蓋著的棋子背） */
+    .slot-back {
+        background: radial-gradient(circle at 35% 30%, #5a4a2a, #2b1f0f 75%);
+        border: 2px solid #8a6d2f;
+        box-shadow: 
+            0 4px 8px rgba(0,0,0,0.6),
+            inset 0 2px 3px rgba(255,255,255,0.15),
+            inset 0 -3px 5px rgba(0,0,0,0.5);
+        color: #d4af37;
     }
 
-    .slot.filled {
+    .slot-back::after {
+        content: '棋';
+        opacity: 0.5;
+        font-size: 16px;
+    }
+
+    .slot-3d.empty-slot .slot-back {
+        background: rgba(255,255,255,0.03);
+        border: 2px dashed rgba(255,255,255,0.25);
+        box-shadow: none;
+    }
+
+    .slot-3d.empty-slot .slot-back::after {
+        content: '';
+    }
+
+    .slot-3d.empty-slot:hover .slot-back {
+        background: rgba(255,255,255,0.08);
+        border-color: rgba(255,255,255,0.5);
+    }
+
+    /* 正面（已翻開，顯示棋子字） */
+    .slot-front {
+        background: radial-gradient(circle at 35% 30%, #fffdf2, #f0e6c8 80%);
         border: 2px solid #8B4513;
-        background: #fff8e7;
-        cursor: default;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-        animation: popIn 0.4s ease;
+        transform: rotateY(180deg);
+        box-shadow:
+            0 4px 10px rgba(0,0,0,0.5),
+            inset 0 2px 3px rgba(255,255,255,0.8),
+            inset 0 -3px 5px rgba(0,0,0,0.2);
     }
 
-    @keyframes popIn {
-        0% { transform: scale(0.3); opacity: 0; }
-        70% { transform: scale(1.15); }
-        100% { transform: scale(1); opacity: 1; }
+    .slot-front.red { color: #c62828; }
+    .slot-front.black { color: #1a1a1a; }
+
+    /* 起始位置紅框標示 */
+    .slot-3d.start-position .slot-back,
+    .slot-3d.start-position .slot-front {
+        box-shadow: 0 0 0 3px #ff3030, 0 0 14px rgba(255,48,48,0.8);
     }
 
-    .slot.filled.red { color: #d32f2f; }
-    .slot.filled.black { color: #212121; }
+    .slot-3d.just-placed .slot-inner {
+        animation: placeGlow 0.8s ease;
+    }
 
+    @keyframes placeGlow {
+        0% { filter: drop-shadow(0 0 0px rgba(255,215,0,0)); }
+        40% { filter: drop-shadow(0 0 12px rgba(255,215,0,0.9)); }
+        100% { filter: drop-shadow(0 0 0px rgba(255,215,0,0)); }
+    }
+
+    .slot-number {
+        position: absolute;
+        bottom: -14px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 9px;
+        color: rgba(255,255,255,0.4);
+    }
+
+    /* ===================== 控制面板 ===================== */
     .control-panel {
-        background: #fff;
-        border-radius: 12px;
+        background: linear-gradient(145deg, #1f1f2e, #15151f);
+        border-radius: 16px;
         padding: 25px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-        width: 320px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+        width: 340px;
         height: fit-content;
+        border: 1px solid rgba(255,255,255,0.08);
     }
 
     .control-panel h2 {
-        color: #333;
+        color: #d4af37;
         margin-bottom: 15px;
         font-size: 20px;
         border-bottom: 2px solid #8B4513;
@@ -148,8 +208,8 @@
     }
 
     .pool-info {
-        background: #f5f5f5;
-        border-radius: 8px;
+        background: rgba(255,255,255,0.05);
+        border-radius: 10px;
         padding: 15px;
         margin-bottom: 15px;
         text-align: center;
@@ -158,47 +218,49 @@
     .pool-count {
         font-size: 36px;
         font-weight: bold;
-        color: #8B4513;
+        color: #d4af37;
+        text-shadow: 0 0 10px rgba(212,175,55,0.5);
     }
 
     .pool-label {
         font-size: 14px;
-        color: #666;
+        color: #aaa;
     }
 
     .draw-btn {
         width: 100%;
         padding: 15px;
-        background: linear-gradient(135deg, #d32f2f, #b71c1c);
+        background: linear-gradient(135deg, #d32f2f, #8c1515);
         color: white;
         border: none;
-        border-radius: 8px;
+        border-radius: 10px;
         font-size: 18px;
         font-weight: bold;
         cursor: pointer;
         margin-bottom: 10px;
         transition: all 0.3s;
-        box-shadow: 0 4px 10px rgba(211, 47, 47, 0.4);
+        box-shadow: 0 4px 15px rgba(211, 47, 47, 0.5);
     }
 
     .draw-btn:hover:not(:disabled) {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 15px rgba(211, 47, 47, 0.5);
+        transform: translateY(-2px) scale(1.02);
+        box-shadow: 0 6px 20px rgba(211, 47, 47, 0.7);
     }
 
     .draw-btn:disabled {
-        background: #ccc;
+        background: #444;
         cursor: not-allowed;
         box-shadow: none;
+        color: #888;
     }
 
     .reset-btn {
         width: 100%;
         padding: 12px;
-        background: #607d8b;
-        color: white;
+        background: #37474f;
+        color: #ddd;
         border: none;
-        border-radius: 8px;
+        border-radius: 10px;
         font-size: 16px;
         cursor: pointer;
         margin-bottom: 15px;
@@ -206,103 +268,136 @@
     }
 
     .reset-btn:hover {
-        background: #455a64;
+        background: #263238;
     }
 
     .drawn-piece-display {
         text-align: center;
         padding: 20px;
-        background: #fffbe6;
-        border-radius: 10px;
+        background: rgba(255,255,255,0.04);
+        border-radius: 12px;
         margin-bottom: 15px;
         border: 2px dashed #d4af37;
-        min-height: 100px;
+        min-height: 110px;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
     }
 
-    .drawn-piece {
-        width: 70px;
-        height: 70px;
+    .drawn-piece-3d {
+        width: 72px;
+        height: 72px;
+        perspective: 500px;
+    }
+
+    .drawn-piece-3d-inner {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        transform-style: preserve-3d;
+        animation: flip3d 0.8s cubic-bezier(.2,.9,.3,1.2);
+    }
+
+    @keyframes flip3d {
+        0% { transform: rotateY(0deg) scale(0.6); }
+        100% { transform: rotateY(360deg) scale(1); }
+    }
+
+    .drawn-piece-face {
+        position: absolute;
+        width: 100%;
+        height: 100%;
         border-radius: 50%;
-        background: #fff8e7;
+        background: radial-gradient(circle at 35% 30%, #fffdf2, #f0e6c8 80%);
         border: 3px solid #8B4513;
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: 28px;
         font-weight: bold;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        animation: flip 0.6s ease;
+        backface-visibility: hidden;
+        box-shadow:
+            0 6px 14px rgba(0,0,0,0.5),
+            inset 0 2px 4px rgba(255,255,255,0.8),
+            inset 0 -4px 6px rgba(0,0,0,0.2);
     }
 
-    @keyframes flip {
-        0% { transform: rotateY(0deg) scale(0.5); opacity: 0; }
-        50% { transform: rotateY(90deg) scale(1.1); }
-        100% { transform: rotateY(360deg) scale(1); opacity: 1; }
-    }
+    .drawn-piece-face.red { color: #c62828; }
+    .drawn-piece-face.black { color: #1a1a1a; }
 
-    .drawn-piece.red { color: #d32f2f; }
-    .drawn-piece.black { color: #212121; }
+    .stage-tag {
+        display: inline-block;
+        margin-top: 8px;
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 13px;
+        font-weight: bold;
+        color: #fff;
+    }
 
     .hint-text {
         font-size: 13px;
-        color: #888;
+        color: #999;
         margin-top: 10px;
         line-height: 1.6;
     }
 
     .order-indicator {
         font-size: 15px;
-        color: #8B4513;
+        color: #d4af37;
         font-weight: bold;
         margin-top: 8px;
         text-align: center;
-    }
-
-    .example-section {
-        margin-top: 30px;
-        background: #fff;
-        border-radius: 12px;
-        padding: 20px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-        max-width: 500px;
-        width: 100%;
-    }
-
-    .example-section h3 {
-        color: #333;
-        margin-bottom: 10px;
-    }
-
-    .example-img {
-        width: 100%;
-        border-radius: 8px;
-        border: 2px solid #ddd;
-    }
-
-    .toggle-example {
-        background: #8B4513;
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 6px;
-        cursor: pointer;
-        margin-bottom: 15px;
-        font-size: 14px;
+        line-height: 1.6;
     }
 
     .complete-message {
-        background: #e8f5e9;
+        background: rgba(76,175,80,0.15);
         border: 2px solid #4caf50;
-        border-radius: 8px;
+        border-radius: 10px;
         padding: 15px;
         text-align: center;
-        color: #2e7d32;
+        color: #81c784;
         font-weight: bold;
         margin-bottom: 15px;
+    }
+
+    /* ===================== 人生階段說明區 ===================== */
+    .stage-info-section {
+        margin-top: 15px;
+        background: rgba(255,255,255,0.04);
+        border-radius: 10px;
+        padding: 15px;
+    }
+
+    .stage-info-section h3 {
+        color: #d4af37;
+        font-size: 15px;
+        margin-bottom: 10px;
+    }
+
+    .stage-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 6px 0;
+        font-size: 13px;
+        color: #ccc;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .stage-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+
+    .stage-range {
+        color: #999;
+        margin-left: auto;
+        font-size: 12px;
     }
 </style>
 </head>
@@ -311,13 +406,8 @@
 <h1>🀄 中國象棋卜卦命盤系統 🀄</h1>
 
 <div class="main-container">
-    <div class="board-container">
-        <div class="river-labels">
-            <span>楚</span>
-            <span>河</span>
-            <span>漢</span>
-            <span>界</span>
-        </div>
+    <div class="board-card">
+        <div class="board-title">總　格</div>
         <div class="board-grid" id="boardGrid"></div>
     </div>
 
@@ -330,7 +420,7 @@
         </div>
 
         <div class="drawn-piece-display" id="drawnDisplay">
-            <div style="color:#999; font-size:14px;">尚未抽取棋子</div>
+            <div style="color:#777; font-size:14px;">尚未抽取棋子</div>
         </div>
 
         <button class="draw-btn" id="drawBtn" onclick="drawPiece()">🎲 翻開棋子</button>
@@ -339,27 +429,47 @@
         <div id="completeMsg"></div>
 
         <div class="order-indicator" id="orderIndicator">
-            下一步：放置於「中」位
+            下一步：放置於第 1 顆（紅框標示處）
         </div>
 
         <div class="hint-text">
-            排列順序規則：<br>
-            每次翻開棋子後，由中軸線「第二顆」棋開始，
-            依照「中 → 左 → 右 → 上 → 下」的順序向外擴展排列，
+            排列順序規則：第一顆棋子固定放置於紅框標示處，
+            之後依照「中 → 左 → 右 → 上 → 下」的順序向外擴展，
             直到 32 個位置全部排滿。
         </div>
 
-        <button class="toggle-example" onclick="toggleExample()">📖 顯示 / 隱藏 範例圖</button>
+        <div class="stage-info-section">
+            <h3>🔮 人生階段對照</h3>
+            <div class="stage-row">
+                <span class="stage-dot" style="background:#4fc3f7;"></span>
+                學習格 <span class="stage-range">11 ~ 20 歲</span>
+            </div>
+            <div class="stage-row">
+                <span class="stage-dot" style="background:#ff6ec7;"></span>
+                情感格 <span class="stage-range">21 ~ 30 歲</span>
+            </div>
+            <div class="stage-row">
+                <span class="stage-dot" style="background:#ffd54f;"></span>
+                事業格 <span class="stage-range">31 ~ 40 歲</span>
+            </div>
+            <div class="stage-row">
+                <span class="stage-dot" style="background:#81c784;"></span>
+                41 ~ 50 歲
+            </div>
+            <div class="stage-row">
+                <span class="stage-dot" style="background:#ba68c8;"></span>
+                51 ~ 60 歲
+            </div>
+            <div class="stage-row">
+                <span class="stage-dot" style="background:#ff8a65;"></span>
+                61 ~ 70 歲
+            </div>
+            <div class="stage-row" style="border-bottom:none;">
+                <span class="stage-dot" style="background:#90a4ae;"></span>
+                71 歲以後
+            </div>
+        </div>
     </div>
-</div>
-
-<div class="example-section" id="exampleSection" style="display:none;">
-    <h3>範例命盤參考圖</h3>
-    <p style="font-size:13px;color:#666;margin-bottom:10px;">
-        此為完整排列 32 顆棋子後的命盤範例，供排盤時參考棋子分布邏輯（由中軸線第二顆開始向外延伸）。
-    </p>
-    <img src="example-board.jpg" alt="命盤範例圖" class="example-img"
-         onerror="this.style.display='none'; this.insertAdjacentHTML('afterend', '<p style=\'color:#999;text-align:center;padding:20px;\'>（請放置您的範例圖片 example-board.jpg）</p>')">
 </div>
 
 <script>
@@ -381,39 +491,75 @@ const pieceSet = [
     {name:'卒', color:'black'}, {name:'卒', color:'black'}, {name:'卒', color:'black'}, {name:'卒', color:'black'}, {name:'卒', color:'black'}
 ];
 
-// ===================== 命盤排列結構定義 =====================
+// ===================== 命盤結構定義（依據圖片 1~32 編號佈局）=====================
+// 編號對照圖片：
+// 列1: 4(single)
+// 列2: 2 1 3（起始列，1 為中心起點）
+// 列3: 5(single)
+// 列4: 7 6 8
+// 列5: 9(single)
+// 列6: 11 10 12
+// 列7: 13(single)
+// 列8: 15 14 16
+// 列9: 17(single)
+// 列10: 19 18 20
+// 列11: 21(single)
+// 列12: 23 22 24
+// 列13: 25(single)
+// 列14: 27 26 28
+// 列15: 29(single)
+// 列16: 31 30 32
+
 const boardLayout = [
-    {type:'single'}, {type:'triple'}, {type:'single'}, {type:'triple'},
-    {type:'single'}, {type:'triple'}, {type:'single'}, {type:'triple'},
-    {type:'single'}, {type:'triple'}, {type:'single'}, {type:'triple'},
-    {type:'single'}, {type:'triple'}, {type:'single'}, {type:'triple'}
+    {type:'single', nums:[4]},
+    {type:'triple', nums:[2,1,3]},   // 起始列：index 1 = 中心(1號)
+    {type:'single', nums:[5]},
+    {type:'triple', nums:[7,6,8]},
+    {type:'single', nums:[9]},
+    {type:'triple', nums:[11,10,12]},
+    {type:'single', nums:[13]},
+    {type:'triple', nums:[15,14,16]},
+    {type:'single', nums:[17]},
+    {type:'triple', nums:[19,18,20]},
+    {type:'single', nums:[21]},
+    {type:'triple', nums:[23,22,24]},
+    {type:'single', nums:[25]},
+    {type:'triple', nums:[27,26,28]},
+    {type:'single', nums:[29]},
+    {type:'triple', nums:[31,30,32]}
 ];
 
-// ===================== 生成「中左右上下」填充順序（修正版） =====================
+const START_ROW = 1; // 第二列（index 1）為起始列
+
+// ===================== 人生階段對應（依棋子編號 1~32）=====================
+// 1~10：總格／學習格前段，11~20：學習格，21~30：情感格，31~32：事業格起始
+function getStageInfo(num) {
+    if (num >= 11 && num <= 20) return {label:'學習格 (11-20歲)', color:'#4fc3f7'};
+    if (num >= 21 && num <= 30) return {label:'情感格 (21-30歲)', color:'#ff6ec7'};
+    if (num >= 31 && num <= 32) return {label:'事業格 (31-40歲)', color:'#ffd54f'};
+    return {label:'總格', color:'#d4af37'};
+}
+
+// ===================== 生成「中、左、右、上、下」填充順序 =====================
 function generateFillOrder() {
     const order = [];
     const totalRows = boardLayout.length;
 
-    // 中軸線「第二顆」棋的位置：索引為 1（也就是第 2 列）
-    const startRow = 1;
-
-    // 建立「上下交錯擴展」的列順序：以 startRow 為起點，往下、往上交錯延伸
     const rowSequence = [];
-    let down = startRow, up = startRow - 1;
+    let down = START_ROW;
+    let up = START_ROW - 1;
+
+    rowSequence.push(down);
+    down++;
 
     while (down < totalRows || up >= 0) {
-        if (down < totalRows) { rowSequence.push(down); down++; }
         if (up >= 0) { rowSequence.push(up); up--; }
+        if (down < totalRows) { rowSequence.push(down); down++; }
     }
 
-    // 依序對每一列，按照「中 → 左 → 右」的順序加入填充序列
     rowSequence.forEach(rowIdx => {
         const row = boardLayout[rowIdx];
-
-        // 中
         order.push({row: rowIdx, pos: 'center'});
-
-        // 左、右（僅限 triple 類型的列才有左右位置）
         if (row.type === 'triple') {
             order.push({row: rowIdx, pos: 'left'});
             order.push({row: rowIdx, pos: 'right'});
@@ -429,132 +575,6 @@ const fillOrder = generateFillOrder();
 let shuffledPieces = [];
 let drawnCount = 0;
 let placedPieces = {};
+let lastPlacedKey = null;
 
-// ===================== 洗牌函式 (Fisher-Yates) =====================
-function shuffle(array) {
-    const arr = [...array];
-    for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-    return arr;
-}
-
-// ===================== 初始化遊戲 =====================
-function initGame() {
-    shuffledPieces = shuffle(pieceSet);
-    drawnCount = 0;
-    placedPieces = {};
-    renderBoard();
-    updatePoolCount();
-    updateOrderIndicator();
-    document.getElementById('drawnDisplay').innerHTML =
-        '<div style="color:#999; font-size:14px;">尚未抽取棋子</div>';
-    document.getElementById('drawBtn').disabled = false;
-    document.getElementById('completeMsg').innerHTML = '';
-}
-
-function updatePoolCount() {
-    document.getElementById('poolCount').textContent = 32 - drawnCount;
-}
-
-function positionLabel(pos) {
-    if (pos === 'center') return '中';
-    if (pos === 'left') return '左';
-    if (pos === 'right') return '右';
-}
-
-function updateOrderIndicator() {
-    const indicator = document.getElementById('orderIndicator');
-    if (drawnCount >= 32) {
-        indicator.textContent = '✅ 命盤已排滿！';
-        return;
-    }
-    const next = fillOrder[drawnCount];
-    const rowNum = next.row + 1;
-    indicator.textContent = `下一步：放置於「${positionLabel(next.pos)}」位（第 ${rowNum} 列）`;
-}
-
-// ===================== 翻開棋子主邏輯 =====================
-function drawPiece() {
-    if (drawnCount >= 32) return;
-
-    const piece = shuffledPieces[drawnCount];
-    const target = fillOrder[drawnCount];
-    const key = `${target.row}-${target.pos}`;
-    placedPieces[key] = piece;
-
-    const display = document.getElementById('drawnDisplay');
-    display.innerHTML = `
-        <div class="drawn-piece ${piece.color}">${piece.name}</div>
-        <div style="margin-top:8px; font-size:13px; color:#666;">
-            放置於：第 ${target.row+1} 列「${positionLabel(target.pos)}」位
-        </div>
-    `;
-
-    drawnCount++;
-    updatePoolCount();
-    renderBoard();
-    updateOrderIndicator();
-
-    if (drawnCount >= 32) {
-        document.getElementById('drawBtn').disabled = true;
-        document.getElementById('completeMsg').innerHTML =
-            '<div class="complete-message">🎉 命盤排列完成！可對照範例圖解讀卦象</div>';
-    }
-}
-
-// ===================== 重新排盤 =====================
-function resetGame() {
-    if (confirm('確定要重新排盤嗎？目前的命盤將會清空重來。')) {
-        initGame();
-    }
-}
-
-// ===================== 渲染命盤 =====================
-function renderBoard() {
-    const grid = document.getElementById('boardGrid');
-    grid.innerHTML = '';
-
-    boardLayout.forEach((row, idx) => {
-        const rowDiv = document.createElement('div');
-        rowDiv.className = row.type === 'single' ? 'slot-row' : 'row-with-sides';
-
-        if (row.type === 'single') {
-            rowDiv.appendChild(createSlot(idx, 'center'));
-        } else {
-            rowDiv.appendChild(createSlot(idx, 'left'));
-            rowDiv.appendChild(createSlot(idx, 'center'));
-            rowDiv.appendChild(createSlot(idx, 'right'));
-        }
-
-        grid.appendChild(rowDiv);
-    });
-}
-
-function createSlot(row, pos) {
-    const key = `${row}-${pos}`;
-    const slot = document.createElement('div');
-    const piece = placedPieces[key];
-
-    if (piece) {
-        slot.className = `slot filled ${piece.color}`;
-        slot.textContent = piece.name;
-    } else {
-        slot.className = 'slot empty';
-    }
-
-    return slot;
-}
-
-// ===================== 顯示/隱藏範例圖 =====================
-function toggleExample() {
-    const section = document.getElementById('exampleSection');
-    section.style.display = section.style.display === 'none' ? 'block' : 'none';
-}
-
-// ===================== 啟動遊戲 =====================
-initGame();
-</script>
-</body>
-</html>
+// ===================== 洗牌函式 =
