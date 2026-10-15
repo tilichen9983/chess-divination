@@ -470,33 +470,54 @@ function captureBoard() {
 
 function saveResult() {
     const name = prompt("請為您的命盤命名（例如：2026生涯占卜）:");
-    if (!name) return;
+    if (!name || !name.trim()) return;
 
     const resultData = {
-        name: name,
+        name: name.trim(),
         timestamp: new Date().toISOString(),
         pieces: placedPieces
     };
 
-    let savedResults = JSON.parse(localStorage.getItem('chessDivinationResults') || '[]');
-    savedResults.push(resultData);
-    localStorage.setItem('chessDivinationResults', JSON.stringify(savedResults));
+    try {
+        let savedResults = JSON.parse(localStorage.getItem('chessDivinationResults') || '[]');
+        savedResults.push(resultData);
+        localStorage.setItem('chessDivinationResults', JSON.stringify(savedResults));
 
-    alert(`命盤「${name}」已儲存！`);
-    generateInterpretation(true);
+        console.log('已儲存的命盤列表：', savedResults);
+        alert(`命盤「${resultData.name}」已儲存！`);
+        generateInterpretation(true);
+    } catch (e) {
+        console.error('儲存命盤時發生錯誤：', e);
+        alert('儲存失敗，請確認瀏覽器是否允許使用本機儲存功能（localStorage），或嘗試改用一般瀏覽模式開啟網頁。');
+    }
 }
 
 function loadResult() {
-    let savedResults = JSON.parse(localStorage.getItem('chessDivinationResults') || '[]');
-    if (savedResults.length === 0) {
-        alert("沒有已儲存的命盤紀錄。");
+    let savedResults = [];
+    try {
+        savedResults = JSON.parse(localStorage.getItem('chessDivinationResults') || '[]');
+    } catch (e) {
+        console.error('讀取命盤紀錄時發生錯誤：', e);
+        alert('讀取紀錄失敗，本機儲存資料可能已損毀，請嘗試重新儲存。');
         return;
     }
+
+    console.log('目前讀取到的命盤列表：', savedResults);
+
+    if (!savedResults || savedResults.length === 0) {
+        alert("沒有已儲存的命盤紀錄，請確認：\n1. 是否已點擊過「儲存命盤」\n2. 瀏覽器是否處於無痕模式\n3. 是否透過 file:// 直接開啟網頁");
+        return;
+    }
+
     const savedNames = savedResults.map(r => r.name);
     const selectedName = prompt(`請選擇要載入的命盤：\n${savedNames.join('\n')}`);
-    const resultToLoad = savedResults.find(r => r.name === selectedName);
+    if (!selectedName) return;
+
+    const trimmedInput = selectedName.trim();
+    const resultToLoad = savedResults.find(r => r.name.trim() === trimmedInput);
+
     if (!resultToLoad) {
-        alert("找不到該命盤紀錄。");
+        alert("找不到該命盤紀錄，請確認輸入的名稱與列表完全一致。");
         return;
     }
 
@@ -509,6 +530,7 @@ function loadResult() {
     renderLoadedBoard();
     alert(`命盤「${resultToLoad.name}」已載入。`);
 }
+
 
 function renderLoadedBoard() {
     const grid = document.getElementById('boardGrid');
