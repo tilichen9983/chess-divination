@@ -502,7 +502,7 @@ function saveResult() {
     console.log('[儲存命盤] 目前儲存總筆數：', savedResults.length, savedResults);
     alert(`命盤「${resultData.name}」已儲存！目前共有 ${savedResults.length} 筆紀錄。`);
     generateInterpretation(true);
-}
+
     } catch (e) {
         console.error('儲存命盤時發生錯誤：', e);
         alert('儲存失敗，請確認瀏覽器是否允許使用本機儲存功能（localStorage），或嘗試改用一般瀏覽模式開啟網頁。');
