@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
-<title>中國象棋卜卦命盤系統</title>
+<title>象棋卜卦解憂室</title>
 <style>
 body {
     font-family: "微軟正黑體", sans-serif;
@@ -391,14 +391,14 @@ h1 { color: #ffd54f; margin-bottom: 20px; }
 </head>
 <body>
 
-<h1>🀄 中國象棋卜卦命盤系統 🀄</h1>
+<h1>象棋卜卦</h1>
 
 <div class="main-container">
     <!-- 左側命盤區 -->
     <div class="board-card" id="boardCard">
         <div class="stage-sidebar" id="stageSidebar"></div>
         <div class="board-content">
-            <div class="board-title">總 格</div>
+            <div class="board-title"></div>
             <div class="board-grid" id="boardGrid"></div>
         </div>
     </div>
@@ -406,7 +406,7 @@ h1 { color: #ffd54f; margin-bottom: 20px; }
     <!-- 右側控制台 (包覆在動態定位容器中) -->
     <div class="control-wrapper" id="controlWrapper">
         <div class="control-panel" id="controlPanel">
-            <h2>📜 命盤卜卦控制台</h2>
+            <h2>📜 掌櫃解憂所</h2>
 
             <div class="btn-group">
                 <button class="reset-btn" onclick="resetGame()" style="background:#c62828;">🔄 重新排盤</button>
@@ -439,7 +439,7 @@ h1 { color: #ffd54f; margin-bottom: 20px; }
             <!-- 散落棋子與洗牌區 -->
             <div class="scatter-section">
                 <div class="scatter-header">
-                    <h3>🀄 攤開的棋子 (請點選)</h3>
+                    <h3>卜卦區 (請點選)</h3>
                     <button id="shuffleBtn" class="shuffle-btn" onclick="shuffleScatterPool()">✋ 洗牌 (剩 3 次)</button>
                 </div>
                 <div id="scatterPool" class="scatter-pool"></div>
