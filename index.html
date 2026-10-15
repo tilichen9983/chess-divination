@@ -468,18 +468,6 @@ function captureBoard() {
     });
 }
 
-function isLocalStorageAvailable() {
-    try {
-        const key = '__chess_test__';
-        localStorage.setItem(key, '1');
-        localStorage.removeItem(key);
-        return true;
-    } catch (e) {
-        console.error('localStorage 不可用:', e);
-        return false;
-    }
-}
-
 function saveResult() {
     if (!isLocalStorageAvailable()) {
         alert('瀏覽器目前無法使用 localStorage。\n請關閉無痕模式，或檢查是否有隱私擴充功能阻擋。');
@@ -522,6 +510,8 @@ function saveResult() {
         console.error('[saveResult] 寫入失敗:', e);
         alert('儲存失敗：' + e.message);
     }
+}
+    generateInterpretation(true);
 }
 
 function loadResult() {
@@ -584,6 +574,9 @@ function clearAllSavedResults() {
     }
 }
 
+    renderLoadedBoard();
+    alert(`命盤「${resultToLoad.name}」已載入。`);
+}
 
 function renderLoadedBoard() {
     const grid = document.getElementById('boardGrid');
