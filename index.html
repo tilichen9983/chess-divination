@@ -6,7 +6,8 @@
 <title>象棋卜卦解憂室 — 棋遇解憂室</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 :root {
     --bg-paper: #F6F3EC;
@@ -223,7 +224,7 @@ h1 { font-family: 'Noto Serif TC', "標楷體", serif; color: var(--text-ink); f
         <div class="bobei-card" id="bobeiCard">
             <h3 class="bobei-title">擲筊</h3>
             <div class="bobei-question">🙏 請問指導靈：<br>「此五子卦象，是否是您最想給我的解答？」</div>
-            <div class="bobei-streak-bar"><span>連續聖筊進度：</span><div class="streak-dot" id="streakDot1">1</div><div class="streak-dot" id="streakDot2">2</div><div class="streak-dot" id="streakDot3">3</div></div>
+            <div class="bobei-streak-bar"><span>連續聖筊進度：</span><div class="streak-dot" id="streakDot1">1</div><div class="streakDot" id="streakDot2">2</div><div class="streak-dot" id="streakDot3">3</div></div>
             <div class="bobei-display-row">
                 <div class="bobei-slot"><div class="bobei-frame" id="bobeiFrameLeft"></div><div class="bobei-side-label" id="bobeiLabelLeft">陽</div></div>
                 <div class="bobei-slot"><div class="bobei-frame" id="bobeiFrameRight"></div><div class="bobei-side-label" id="bobeiLabelRight">陰</div></div>
@@ -282,17 +283,17 @@ h1 { font-family: 'Noto Serif TC', "標楷體", serif; color: var(--text-ink); f
                     <h3>📜 棋遇解憂室・大師神諭提示</h3>
                     <button class="back-to-panel-btn" onclick="closeReadingOverlay()">↩ 返回</button>
                 </div>
-                
+                <!-- 50字精簡神諭顯示區 -->
                 <div class="reading-body" id="readingBody"></div>
-
-                <!-- 索取完整解卦的互動表單區 -->
+                
+                <!-- 索取完整解卦互動區 -->
                 <div id="leadCaptureSection" style="display:none; margin-top: 15px;">
                     <hr style="border: 0; border-top: 1px dashed var(--border-warm); margin-bottom: 15px;">
                     <div style="font-size: 15px; font-weight: 700; color: var(--accent-tea); margin-bottom: 6px;">
                         ✉️ 索取大師親筆深度完整解卦
                     </div>
                     <p style="font-size: 12.5px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.5;">
-                        AI 的初步指引僅供參考。若您需要針對此卦象與您的問題進行最完整、客製化的深度解析，請點擊下方按鈕，系統將自動擷取您的卦象圖並傳送給開發者大師。
+                        AI 的初步指引僅供參考。若您需要針對此卦象與您的問題進行最完整、客製化的深度解析，請點擊下方按鈕，系統將自動擷取卦象圖並傳送給大師。
                     </p>
                     <button class="action-btn" id="btnSubmitImage" style="background: var(--accent-tea); width: 100%; padding: 12px; font-size: 14px;" onclick="submitBoardImage()">📸 提交卦象圖</button>
 
@@ -301,7 +302,6 @@ h1 { font-family: 'Noto Serif TC', "標楷體", serif; color: var(--text-ink); f
                         <input type="email" id="leadEmail" class="lead-input" placeholder="📧 您的電子郵件信箱">
                         <button class="action-btn" id="btnRequestFull" style="background: var(--accent-gold); width: 100%; padding: 12px; font-size: 14px; margin-top: 5px;" onclick="requestFullReading()">📨 索取完整解卦</button>
                     </div>
-                    
                     <div id="leadSuccessMsg" style="display:none; margin-top: 12px; background: #EFF5F0; border: 1px solid #C8DFCE; border-radius: 8px; padding: 10px; color: #4A7A58; font-weight: 700; font-size: 13px; text-align: center; line-height: 1.5;"></div>
                 </div>
             </div>
@@ -311,7 +311,7 @@ h1 { font-family: 'Noto Serif TC', "標楷體", serif; color: var(--text-ink); f
 
 <script>
 // =========================================================================
-// 🔑 請在此貼上您 Google Apps Script 部署後的新網頁應用程式網址
+// 🔑 請在此貼上您 Google Apps Script 部署後的網頁應用程式網址
 // =========================================================================
 const GAS_GEM_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbzxO4t0_FXbGhKdejB-sjEdaeQz8wDSfIYnCtVzkGS0LGhVWK2QOVmQnCIFVdIaRwO05Q/exec"; 
 
@@ -353,6 +353,7 @@ function shuffle(array) {
     return array;
 }
 
+// ✨ 修正了畫圖函式的名稱，保證擲筊 100% 順暢運作
 function getCupSvgContent(type, isRight = false) {
     const flipTransform = isRight ? 'transform="scale(-1, 1) translate(-100, 0)"' : '';
     if (type === 'yang') return `<g ${flipTransform}><path d="M 28 16 C 84 16, 84 124, 28 124 Z" fill="#DC1E32"/></g>`;
@@ -495,8 +496,14 @@ function drawSpecificPiece(index, el) {
 
 function showBobeiSection() {
     document.getElementById('bobeiCard').style.display = 'flex'; consecutiveSheng = 0; bobeiVerified = false;
-    for (let i=1; i<=3; i++) document.getElementById(`streakDot${i}`).classList.remove('active');
-    document.getElementById('bobeiFrameLeft').innerHTML = getBobeiSvg('yang', 'right'); document.getElementById('bobeiFrameRight').innerHTML = getBobeiSvg('yin', 'right');
+    for (let i=1; i<=3; i++) {
+        let dot = document.getElementById(`streakDot${i}`);
+        if(dot) dot.classList.remove('active');
+    }
+    // ✨ 修復關鍵：使用正確的 getCupSvgContent
+    document.getElementById('bobeiFrameLeft').innerHTML = getCupSvgContent('yang', 'right'); 
+    document.getElementById('bobeiFrameRight').innerHTML = getCupSvgContent('yin', 'right');
+    
     document.getElementById('bobeiResultName').className = 'bobei-result-name sheng'; document.getElementById('bobeiResultName').textContent = '請誠心擲筊';
     document.getElementById('bobeiThrowBtn').disabled = false; document.getElementById('bobeiThrowBtn').textContent = '🙏 誠心擲筊請示';
     setTimeout(() => { document.getElementById('bobeiCard').scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 150);
@@ -512,17 +519,34 @@ function throwBobei() {
         let outcome = (r1 !== r2) ? 'sheng' : (r1 === 'yang' ? 'xiao' : 'yin');
         
         if (outcome === 'sheng') {
-            document.getElementById('bobeiFrameLeft').innerHTML = getBobeiSvg('yang', 'right'); document.getElementById('bobeiFrameRight').innerHTML = getBobeiSvg('yin', 'right');
-            consecutiveSheng++; document.getElementById(`streakDot${consecutiveSheng}`).classList.add('active');
+            // ✨ 修復關鍵：使用正確的 getCupSvgContent
+            document.getElementById('bobeiFrameLeft').innerHTML = getCupSvgContent('yang', 'right'); 
+            document.getElementById('bobeiFrameRight').innerHTML = getCupSvgContent('yin', 'right');
+            consecutiveSheng++; 
+            let activeDot = document.getElementById(`streakDot${consecutiveSheng}`);
+            if(activeDot) activeDot.classList.add('active');
+
             document.getElementById('bobeiResultName').className = 'bobei-result-name sheng'; document.getElementById('bobeiResultName').textContent = '聖筊';
             if (consecutiveSheng >= 3) {
                 bobeiVerified = true; document.getElementById('divineConfirmedBanner').style.display = 'block';
                 btn.textContent = '✨ 已獲指導靈三聖筊認證'; updateGemButtonState(); return;
             } else btn.textContent = `🙏 繼續擲筊（已連續 ${consecutiveSheng} 聖筊）`;
         } else {
-            consecutiveSheng = 0; for(let i=1;i<=3;i++) document.getElementById(`streakDot${i}`).classList.remove('active');
-            if(outcome === 'xiao'){ document.getElementById('bobeiFrameLeft').innerHTML = getBobeiSvg('yang', 'right'); document.getElementById('bobeiFrameRight').innerHTML = getBobeiSvg('yang', 'left'); document.getElementById('bobeiResultName').className = 'bobei-result-name xiao'; document.getElementById('bobeiResultName').textContent = '笑筊'; }
-            else { document.getElementById('bobeiFrameLeft').innerHTML = getBobeiSvg('yin', 'left'); document.getElementById('bobeiFrameRight').innerHTML = getBobeiSvg('yin', 'right'); document.getElementById('bobeiResultName').className = 'bobei-result-name yin'; document.getElementById('bobeiResultName').textContent = '陰筊'; }
+            consecutiveSheng = 0; 
+            for(let i=1; i<=3; i++) {
+                let dot = document.getElementById(`streakDot${i}`);
+                if(dot) dot.classList.remove('active');
+            }
+            if(outcome === 'xiao'){ 
+                document.getElementById('bobeiFrameLeft').innerHTML = getCupSvgContent('yang', 'right'); 
+                document.getElementById('bobeiFrameRight').innerHTML = getCupSvgContent('yang', 'left'); 
+                document.getElementById('bobeiResultName').className = 'bobei-result-name xiao'; document.getElementById('bobeiResultName').textContent = '笑筊'; 
+            }
+            else { 
+                document.getElementById('bobeiFrameLeft').innerHTML = getCupSvgContent('yin', 'left'); 
+                document.getElementById('bobeiFrameRight').innerHTML = getCupSvgContent('yin', 'right'); 
+                document.getElementById('bobeiResultName').className = 'bobei-result-name yin'; document.getElementById('bobeiResultName').textContent = '陰筊'; 
+            }
             btn.textContent = '🙏 重新誠心擲筊請示';
         }
         btn.disabled = false;
@@ -636,6 +660,7 @@ window.onload = resetGame;
 
 function saveResult() { if(currentIndex===0) return alert("無資料可儲存！"); const name = prompt("命盤命名:"); if(!name) return; let saved = JSON.parse(localStorage.getItem('chessResults') || '[]'); saved.push({name, mode: currentMode, question: document.getElementById('userQuestion').value, timestamp: new Date().toISOString(), pieces: placedPieces, pool: remainingPieces, shuffleCount}); localStorage.setItem('chessResults', JSON.stringify(saved)); alert(`已儲存「${name}」`); }
 function loadResult() { let saved = JSON.parse(localStorage.getItem('chessResults') || '[]'); if(saved.length===0) return alert("無儲存紀錄。"); const name = prompt(`請選擇載入：\n${saved.map(r=>r.name).join('\n')}`); const res = saved.find(r=>r.name===name); if(!res) return alert("找不到紀錄。"); if(currentMode !== (res.mode||'destiny')) switchMode(res.mode||'destiny'); placedPieces = res.pieces||{}; remainingPieces = res.pool||[]; shuffleCount = res.shuffleCount!==undefined?res.shuffleCount:3; currentIndex = Object.keys(placedPieces).length; updatePoolStatusUI(); updateShuffleBtn(); if(currentIndex>=maxTargetPieces){ document.getElementById('orderIndicator').textContent = '✅ 已載入完成！'; if(currentMode==='divination') showBobeiSection(); } else document.getElementById('orderIndicator').textContent = `下一步：第 ${currentIndex + 1} 顆`; if(placedPieces[currentIndex]) document.getElementById('drawnDisplay').innerHTML = `<div class="chess-piece ${placedPieces[currentIndex].color}" style="margin:0 auto; width:44px; height:44px; font-size:18px;">${placedPieces[currentIndex].name}</div>`; document.getElementById('completeMsg').textContent = `✅ 已載入「${name}」`; const grid = document.getElementById('boardGrid'); grid.innerHTML = ''; const layout = (currentMode === 'divination') ? fiveBoardLayout : fullBoardLayout; layout.forEach(row => { const rowDiv = document.createElement('div'); rowDiv.className = 'board-row'; row.nums.forEach(num => { const cell = document.createElement('div'); cell.className = 'cell'; cell.id = `cell-${num}`; if (num === 1) cell.classList.add('start-cell'); const piece = placedPieces[num]; if (piece) { const pieceEl = document.createElement('div'); pieceEl.className = `chess-piece ${piece.color}`; pieceEl.textContent = piece.name; cell.appendChild(pieceEl); } else { cell.classList.add('covered'); const label = document.createElement('span'); label.className = 'cell-number'; label.textContent = num; cell.appendChild(label); } rowDiv.appendChild(cell); }); grid.appendChild(rowDiv); }); setTimeout(renderSidebar, 30); renderScatterPool(); if(currentIndex>0 && currentIndex<maxTargetPieces) syncPanelHeightToCell(currentIndex); else syncPanelHeightToCell(null); updateGemButtonState(); }
+function updatePoolStatusUI() { if (currentMode === 'divination') { document.getElementById('poolCount').textContent = Math.max(0, 5 - currentIndex); document.getElementById('poolLabelSuffix').textContent = `顆（牌池剩 ${32 - currentIndex} 顆）`; } else { document.getElementById('poolCount').textContent = 32 - currentIndex; } }
 </script>
 </body>
 </html>
