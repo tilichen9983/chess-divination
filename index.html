@@ -195,12 +195,17 @@ h1 {
     z-index: 5;
 }
 
+/* 將標號放大並置中顯示 */
 .cell-number {
     position: absolute;
-    top: -15px;
-    font-size: 10px;
-    font-weight: 700;
-    color: var(--accent-tea);
+    font-size: 18px;
+    font-weight: bold;
+    color: rgba(154, 123, 86, 0.7);
+    pointer-events: none;
+    user-select: none;
+}
+.cell:not(.covered) .cell-number {
+    display: none;
 }
 
 .chess-piece {
@@ -252,7 +257,7 @@ h1 {
     100% { transform: rotateY(0deg) scale(1); opacity: 1; }
 }
 
-/* 右側卜卦區（棋遇解憂室）外框 */
+/* 右側卜卦區（控制台）外框 */
 .control-wrapper {
     width: 420px;
     transition: transform 0.45s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -348,7 +353,7 @@ h1 {
     font-size: 11.5px;
 }
 
-/* 請示問題輸入框 */
+/* 提問欄位 */
 .question-input-wrap {
     margin-bottom: 10px;
 }
@@ -396,7 +401,7 @@ h1 {
 .btn-load  { background: var(--accent-sage); }
 .btn-snap  { background: var(--accent-tea); }
 
-/* 🔮 送交專屬 Gemini Gem 知識庫解卦按鈕 */
+/* 送交大師專屬知識庫按鈕 */
 .gem-analyze-btn {
     width: 100%;
     padding: 11px 14px;
@@ -569,7 +574,7 @@ h1 {
     transform: scale(0) !important;
 }
 
-/* 擲筊請示指導靈區塊 */
+/* 擲筊互動區 */
 .bobei-section {
     display: none;
     background: linear-gradient(145deg, #FAF6EE, #F1EAE0);
@@ -680,9 +685,9 @@ h1 {
     cursor: not-allowed;
 }
 
-/* =========================================================
-   ✨ 嵌入並覆蓋在「卜卦區」上的解盤報告面板 (Overlay)
-   ========================================================= */
+/* =========================================
+   覆蓋在「卜卦區」上方的解盤報告面板 (Overlay)
+========================================= */
 .reading-overlay {
     display: none;
     position: absolute;
@@ -744,10 +749,7 @@ h1 {
     border: 1px solid var(--border-warm);
     border-radius: 10px;
     padding: 14px;
-    font-size: 13.5px;
-    line-height: 1.75;
     color: var(--text-main);
-    white-space: pre-wrap;
     word-break: break-word;
 }
 
@@ -774,6 +776,75 @@ h1 {
 @keyframes spin {
     to { transform: rotate(360deg); }
 }
+
+/* =========================================
+   新增：解卦報告內的「十字動態視覺化命盤」與 Markdown 樣式
+========================================= */
+.rv-board {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding: 18px 10px;
+    background: linear-gradient(145deg, #FBF8F1, #F0E6D2);
+    border: 1.5px solid var(--accent-gold);
+    border-radius: 12px;
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.05), 0 4px 10px rgba(90, 75, 55, 0.08);
+}
+.rv-row { 
+    display: flex; 
+    gap: 16px; 
+    justify-content: center; 
+}
+.rv-cell {
+    width: 50px; height: 50px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    background: linear-gradient(145deg, #E8E1D3, #D5CBB8);
+    border: 1.5px dashed #B8AC96;
+}
+.rv-cell.start { 
+    border: 2px solid var(--red-chess); 
+    box-shadow: 0 0 8px rgba(184, 59, 46, 0.25);
+}
+.rv-piece {
+    width: 46px; height: 46px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Noto Serif TC', serif;
+    font-size: 20px; font-weight: 900;
+    background: radial-gradient(circle at 32% 30%, #FFFDF9 0%, #F4ECE0 65%, #E3D6C3 100%);
+    box-shadow: 0 2px 5px rgba(60, 45, 30, 0.25), inset 0 2px 2px rgba(255, 255, 255, 0.9), inset 0 -2px 3px rgba(160, 140, 110, 0.35);
+    border: 2px solid;
+    position: absolute; top:0; left:0; right:0; bottom:0; margin:auto;
+}
+.rv-piece.red { color: var(--red-chess); border-color: var(--red-chess); }
+.rv-piece.black { color: var(--black-chess); border-color: var(--black-chess); }
+.rv-piece::after {
+    content: ''; position: absolute; top: 2px; left: 2px; right: 2px; bottom: 2px;
+    border-radius: 50%; border: 1px solid currentColor; opacity: 0.35;
+}
+.rv-label {
+    position: absolute; top: -20px; font-size: 11px; font-weight: 700; color: var(--accent-tea);
+    white-space: nowrap;
+}
+
+.reading-text-content {
+    font-size: 14px;
+    line-height: 1.8;
+    color: var(--text-main);
+}
+.md-h1, .md-h2, .md-h3 {
+    color: var(--accent-tea);
+    font-family: 'Noto Serif TC', serif;
+    font-weight: 900;
+    margin: 20px 0 10px 0;
+}
+.md-h3 { font-size: 15.5px; border-bottom: 1.5px dashed var(--border-warm); padding-bottom: 5px; color: #4A3525; }
+.md-h2 { font-size: 17px; border-bottom: 2px solid var(--accent-gold); padding-bottom: 6px; }
+.md-h1 { font-size: 19px; text-align: center; color: #5C4932; }
 
 @media (max-width: 820px) {
     .control-wrapper {
@@ -839,14 +910,14 @@ h1 {
 
             <!-- 🔮 一鍵送交 Gemini Gem 知識庫解卦按鈕 -->
             <button class="gem-analyze-btn" id="gemAnalyzeBtn" onclick="requestGemInterpretation()" disabled>
-                🔮 請先完成排盤以啟動專屬大師解卦
+                🔮 請先完成排盤以啟動大師解卦
             </button>
 
             <div class="order-indicator" id="orderIndicator">
                 下一步：請點選下方棋子，放置於第 1 顆（紅框中心）
             </div>
 
-            <!-- 擲筊請示指導靈互動區（五子占卜排完後顯示） -->
+            <!-- 擲筊請示指導靈互動區 -->
             <div class="bobei-section" id="bobeiSection">
                 <div class="bobei-title">🙏 擲筊請示指導靈</div>
                 <div class="bobei-question">「請問指導靈，此卦象是否是您最想給我的解答？」</div>
@@ -901,10 +972,9 @@ h1 {
 
 <script>
 // =========================================================================
-// 🔑 【極重要】請在此貼上您部署好的 Google Apps Script 網頁應用程式網址
-// 若尚未填入網址，系統會貼心展示「連線設定指引與架構預覽」於覆蓋面板中
+// 🔑 請在此貼上您部署好的 Google Apps Script 網頁應用程式網址
 // =========================================================================
-const GAS_GEM_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbzxO4t0_FXbGhKdejB-sjEdaeQz8wDSfIYnCtVzkGS0LGhVWK2QOVmQnCIFVdIaRwO05Q/exec"; 
+const GAS_GEM_WEBHOOK_URL = ""; 
 
 // ===================== 32顆象棋資料 =====================
 const pieceSet = [
@@ -924,7 +994,7 @@ const pieceSet = [
     {name:'卒', color:'black'}, {name:'卒', color:'black'}, {name:'卒', color:'black'}, {name:'卒', color:'black'}, {name:'卒', color:'black'}
 ];
 
-// 五子占卜棋盤結構（上4、中2-1-3、下5）
+// 五子占卜棋盤結構
 const fiveBoardLayout = [
     {type:'single', nums:[4]},
     {type:'triple', nums:[2,1,3]},
@@ -956,13 +1026,13 @@ const stageRanges = [
     {key:'學習格', title:'學習格',   sub:'11-20歲', alignCell:7,  range:[5,8],   color:'#6A8B9A'},
     {key:'情感格', title:'情感格',   sub:'21-30歲', alignCell:11, range:[9,12],  color:'#C87D74'},
     {key:'事業格', title:'事業格',   sub:'31-40歲', alignCell:15, range:[13,16], color:'#B08D57'},
-    {key:'41~50',  title:'(41-50歲)', sub:'',       alignCell:19, range:[17,20], color:'#6E8B74'},
-    {key:'51~60',  title:'(51-60歲)', sub:'',       alignCell:23, range:[21,24], color:'#8E7692'},
-    {key:'61~70',  title:'(61-70歲)', sub:'',       alignCell:27, range:[25,28], color:'#C28458'},
-    {key:'71-80',  title:'(71-80歲)', sub:'',       alignCell:31, range:[29,32], color:'#7F8C8D'}
+    {key:'41-50',  title:'41-50歲',  sub:'',       alignCell:19, range:[17,20], color:'#6E8B74'},
+    {key:'51-60',  title:'51-60歲',  sub:'',       alignCell:23, range:[21,24], color:'#8E7692'},
+    {key:'61-70',  title:'61-70歲',  sub:'',       alignCell:27, range:[25,28], color:'#C28458'},
+    {key:'71-80',  title:'71-80歲',  sub:'',       alignCell:31, range:[29,32], color:'#7F8C8D'}
 ];
 
-let currentMode = 'five'; // 'five' 或 'full'
+let currentMode = 'five'; 
 let maxTargetPieces = 5;
 let remainingPieces = [];
 let currentIndex = 0;
@@ -984,13 +1054,11 @@ function shuffle(array) {
 function getCupSvgContent(type, isRight = false) {
     const flipTransform = isRight ? 'transform="scale(-1, 1) translate(-100, 0)"' : '';
     if (type === 'yang') {
-        // 平面是陽（淺紅內裡＋深紅立體側邊）
         return `<g ${flipTransform}>
             <path d="M 22 12 C 62 18, 86 48, 48 82 C 30 68, 20 40, 22 12 Z" fill="#8B1E1E" />
             <path d="M 18 10 C 56 16, 78 46, 42 78 C 24 64, 16 38, 18 10 Z" fill="#F29B76" stroke="#8B1E1E" stroke-width="2.5"/>
         </g>`;
     } else {
-        // 凸面是陰（深紅飽滿弧面＋白色月牙反光）
         return `<g ${flipTransform}>
             <path d="M 20 10 C 64 16, 86 48, 44 80 C 24 64, 16 38, 20 10 Z" fill="#B82920" stroke="#7A150F" stroke-width="2.5"/>
             <path d="M 38 24 C 54 34, 58 52, 42 66" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" opacity="0.88"/>
@@ -1309,7 +1377,6 @@ function throwBobei() {
         cupL.classList.remove('tossing');
         cupR.classList.remove('tossing');
 
-        // 隨機產生兩枚筊杯狀態（yang: 平面陽, yin: 凸面陰）
         const res1 = Math.random() < 0.5 ? 'yang' : 'yin';
         const res2 = Math.random() < 0.5 ? 'yang' : 'yin';
 
@@ -1320,7 +1387,6 @@ function throwBobei() {
         const desc = document.getElementById('bobeiDesc');
 
         if (res1 !== res2) {
-            // 聖筊（一陽一陰）
             consecutiveSheng++;
             updateBobeiLights();
             badge.style.color = '#1E88E5';
@@ -1338,18 +1404,16 @@ function throwBobei() {
                 return;
             }
         } else if (res1 === 'yang' && res2 === 'yang') {
-            // 笑筊（雙陽平面）
             consecutiveSheng = 0;
             updateBobeiLights();
             badge.style.color = '#FB8C00';
             badge.textContent = '😊 笑筊（雙陽平面）｜連續次數歸零';
             desc.textContent = '笑筊：表示神明一笑、不解，或者考慮中，行事狀況不明，請重新說清楚祈求後再擲筊，或重新排盤。';
         } else {
-            // 陰筊（雙陰凸面）
             consecutiveSheng = 0;
             updateBobeiLights();
             badge.style.color = '#D32F2F';
-            badge.textContent = '🌧️ 陰筊（哭筊／無筊）｜連續次數歸零';
+            badge.textContent = '🌧️ 陰筊（雙陰凸面）｜連續次數歸零';
             desc.textContent = '陰筊：表示神明否定、憤怒，或者不宜行事，可以重新再擲筊請示或重新排盤。';
         }
 
@@ -1357,7 +1421,6 @@ function throwBobei() {
     }, 520);
 }
 
-// 更新「送交大師專屬知識庫解卦」按鈕狀態
 function updateGemButtonState() {
     const btn = document.getElementById('gemAnalyzeBtn');
     if (cachedReadingHtml) {
@@ -1368,10 +1431,10 @@ function updateGemButtonState() {
 
     if (currentIndex < maxTargetPieces) {
         btn.disabled = true;
-        btn.innerHTML = `🔮 請先完成 ${maxTargetPieces} 顆排盤以啟動大師解卦`;
+        btn.innerHTML = `🔮 請先完成排盤以啟動大師解卦`;
     } else if (currentMode === 'five' && !bobeiVerified) {
         btn.disabled = false;
-        btn.innerHTML = '🔮 一鍵送交大師專屬知識庫解卦（建議先獲三聖筊）';
+        btn.innerHTML = '🔮 送交大師專屬知識庫解卦（建議先獲三聖筊）';
     } else {
         btn.disabled = false;
         btn.innerHTML = '🔮 一鍵送交大師專屬知識庫解卦（覆蓋顯示於此區）';
@@ -1379,8 +1442,59 @@ function updateGemButtonState() {
 }
 
 // =========================================================================
-// ✨ 核心功能：將卦象一鍵送往您的 Gemini Gem 後端，並將解卦結果嵌在「卜卦區」覆蓋上去
+// ✨ 生成在報告頂部的「十字排版視覺化圖形」
 // =========================================================================
+function generateVisualBoardHtml() {
+    const getPiece = (num) => {
+        const p = placedPieces[num];
+        if (!p) return `<div class="rv-label">${num}</div>`;
+        return `<div class="rv-piece ${p.color}">${p.name}</div>`;
+    };
+    
+    return `
+    <div class="rv-board">
+        <div style="font-family:'Noto Serif TC', serif; font-size:17px; font-weight:900; color:var(--accent-tea); margin-bottom:18px; letter-spacing:4px;">象 棋 占 卜</div>
+        <div style="display:flex; flex-direction:column; gap:14px; align-items:center;">
+            <div class="rv-row">
+                <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
+                    <div class="rv-cell">${getPiece(4)}</div>
+                </div>
+            </div>
+            <div class="rv-row">
+                <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
+                    <div class="rv-cell">${getPiece(2)}</div>
+                </div>
+                <div style="display:flex; flex-direction:column; align-items:center; gap:6px; margin:0 8px;">
+                    <div class="rv-cell start">${getPiece(1)}</div>
+                </div>
+                <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
+                    <div class="rv-cell">${getPiece(3)}</div>
+                </div>
+            </div>
+            <div class="rv-row">
+                <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
+                    <div class="rv-cell">${getPiece(5)}</div>
+                </div>
+            </div>
+        </div>
+        ${bobeiVerified ? '<div style="font-size:12px; font-weight:bold; color:#B8860B; margin-top:16px;">🌟 本卦象已由指導靈三聖筊認證</div>' : ''}
+    </div>
+    `;
+}
+
+// 完美美化 AI 輸出的 Markdown 文字 (加粗、大小標題)
+function formatAIResponse(text) {
+    let html = text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    html = html.replace(/\*\*(.*?)\*\*/g, '<strong style="color: #4A3525;">$1</strong>');
+    html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+    html = html.replace(/^### (.*$)/gim, '<h3 class="md-h3">$1</h3>');
+    html = html.replace(/^## (.*$)/gim, '<h2 class="md-h2">$1</h2>');
+    html = html.replace(/^# (.*$)/gim, '<h1 class="md-h1">$1</h1>');
+    html = html.replace(/\n/g, '<br>');
+    html = html.replace(/(<br>\s*){3,}/g, '<br><br>'); // 移除過多的換行
+    return html;
+}
+
 function buildBoardSummaryData() {
     let lines = [];
     if (currentMode === 'five') {
@@ -1398,6 +1512,8 @@ function buildBoardSummaryData() {
             }
         }
         lines.push(`指導靈三聖筊認證狀態：${bobeiVerified ? '已獲得連續三個聖筊認證' : '尚未完成三聖筊'}`);
+        // ✨ 強制禁止 AI 畫圖，因為我們前端已經有最精美的 rv-board 視覺了！
+        lines.push("\n⚠️ 【系統強制排版指令】：請直接從「格局綜觀」開始輸出文字分析，【絕對不要】使用純文字符號（如線條、空白）繪製十字排版的宮位圖或方塊圖，系統前端已會自動產生精美視覺圖形。");
     } else {
         stageRanges.forEach(stage => {
             let sList = [];
@@ -1420,7 +1536,6 @@ async function requestGemInterpretation() {
     const bodyEl = document.getElementById('readingBody');
     overlay.classList.add('active');
 
-    // 若已經算過，直接展開顯示
     if (cachedReadingHtml) {
         bodyEl.innerHTML = cachedReadingHtml;
         return;
@@ -1429,40 +1544,29 @@ async function requestGemInterpretation() {
     const question = document.getElementById('userQuestion').value.trim();
     const modeName = (currentMode === 'five') ? '象棋占卜（五子單點解惑）' : '命運解碼室（三十二子全盤）';
     const boardSummary = buildBoardSummaryData();
+    const cleanUrl = (GAS_GEM_WEBHOOK_URL || "").trim();
 
-    // 顯示載入動畫覆蓋在卜卦區上
+    if (!cleanUrl) {
+        bodyEl.innerHTML = `
+            <div style="color:var(--red-chess); font-weight:700; margin-bottom:8px;">⚠️ 尚未設定 Google Apps Script 網址</div>
+            <div style="font-size:13px; line-height:1.6;">
+                請在 HTML 程式碼中找到 <code>const GAS_GEM_WEBHOOK_URL = "";</code>，填入您在 Google Apps Script 部署後取得的 Web App 網址（結尾必須為 <code>/exec</code>）。
+            </div>`;
+        return;
+    }
+
     bodyEl.innerHTML = `
         <div class="reading-loading">
             <div class="spinner"></div>
-            <div style="font-weight:700; font-size:15px;">正在將您的卦象送往「棋遇解憂室・大師專屬 Gemini 知識庫」...</div>
+            <div style="font-weight:700; font-size:15px;">正在將您的卦象送往「大師專屬知識庫」...</div>
             <div style="font-size:12px; color:var(--text-muted);">結合獨門象棋心法深度推演中，請稍候約 5～10 秒</div>
         </div>
     `;
 
-    // 檢查開發者是否已填入 Google Apps Script 網址
-    if (!GAS_GEM_WEBHOOK_URL || GAS_GEM_WEBHOOK_URL.trim() === "") {
-        setTimeout(() => {
-            const previewHtml = `<div style="background:#FFF8E7; border:1px solid #E6C875; padding:10px 12px; border-radius:8px; margin-bottom:12px; font-size:12.5px; color:#6E5211;">
-<strong>⚙️ 開發者連線提示：</strong><br>
-目前尚未在程式碼第 907 行填入您的 <code>GAS_GEM_WEBHOOK_URL</code> 網址。填入後，此處即會直接顯示來自您私人 Gemini 知識庫的精準解卦內容！以下為系統已為您自動打包好、準備傳送給您後端的卦象封包：
-</div><strong>【求卜模式】</strong>：${modeName}
-<strong>【請示問題】</strong>：${question || '（未填寫，請求綜合指引）'}
-
-<strong>【傳送至您專屬知識庫的卦象盤面】</strong>：
-${boardSummary}
-
-<hr style="border:none; border-top:1px dashed #D5CBB8; margin:12px 0;">
-<em>🔒 保密機制已啟動：本網頁前端不包含任何「象棋卜卦核心心法」文字，一般使用者若自行截圖去問外部 AI，僅能獲得普通字面解讀；唯有透過您的專屬連線才能獲得真正精準的教材級解盤。</em>`;
-            cachedReadingHtml = previewHtml;
-            bodyEl.innerHTML = previewHtml;
-            updateGemButtonState();
-        }, 900);
-        return;
-    }
-
     try {
-        const response = await fetch(GAS_GEM_WEBHOOK_URL, {
+        const response = await fetch(cleanUrl, {
             method: 'POST',
+            redirect: 'follow',
             headers: { 'Content-Type': 'text/plain;charset=utf-8' },
             body: JSON.stringify({
                 modeName: modeName,
@@ -1471,16 +1575,29 @@ ${boardSummary}
             })
         });
 
-        const data = await response.json();
+        const rawText = await response.text();
+        let data;
+        try {
+            data = JSON.parse(rawText);
+        } catch (parseErr) {
+            bodyEl.innerHTML = `<div style="color:var(--red-chess); font-weight:700;">⚠️ 伺服器回傳格式錯誤，請檢查 GAS 權限設定。</div>`;
+            return;
+        }
+
         if (data.status === 'success') {
-            cachedReadingHtml = data.result;
-            bodyEl.textContent = data.result;
+            // ✨ 在頂部嵌入前端自動生成的「精美十字視覺化圖形」
+            const visualBoardHtml = currentMode === 'five' ? generateVisualBoardHtml() : '';
+            // 透過 formatAIResponse 自動將 AI 的 Markdown 轉化為精美排版
+            const formattedText = formatAIResponse(data.result);
+            
+            cachedReadingHtml = visualBoardHtml + `<div class="reading-text-content">${formattedText}</div>`;
+            bodyEl.innerHTML = cachedReadingHtml;
             updateGemButtonState();
         } else {
-            bodyEl.innerHTML = `<div style="color:var(--red-chess); font-weight:700;">⚠️ 解盤伺服器回傳錯誤：${data.message || '未知錯誤'}</div>`;
+            bodyEl.innerHTML = `<div style="color:var(--red-chess); font-weight:700;">⚠️ 解盤回傳錯誤：${data.message || '未知錯誤'}</div>`;
         }
     } catch (err) {
-        bodyEl.innerHTML = `<div style="color:var(--red-chess); font-weight:700;">⚠️ 無法連線至解盤知識庫，請確認網路狀態或稍後再試。</div>`;
+        bodyEl.innerHTML = `<div style="color:var(--red-chess); font-weight:700;">⚠️ 無法連線 (${err.message})</div>`;
     }
 }
 
@@ -1500,8 +1617,8 @@ function resetGame() {
     closeReadingOverlay();
     document.getElementById('bobeiSection').style.display = 'none';
     document.getElementById('poolCount').textContent = 32;
-    document.getElementById('drawnDisplay').innerHTML = '<div style="color:#999; font-size:12px;">尚未翻棋</div>';
-    document.getElementById('orderIndicator').textContent = '下一步：請點選下方棋子，放置於第 1 顆（紅框中心）';
+    document.getElementById('drawnDisplay').innerHTML = '<div style="color:#999; font-size:12px;">尚未抽取</div>';
+    document.getElementById('orderIndicator').textContent = '下一步：放置於第 1 顆（紅框標示處）';
 
     updateShuffleBtn();
     updateGemButtonState();
@@ -1530,7 +1647,7 @@ function captureBoard() {
 
 function saveResult() {
     if (currentIndex === 0) {
-        alert("尚未翻開任何棋子，無資料可儲存！");
+        alert("尚未抽取任何棋子，無資料可儲存！");
         return;
     }
     const name = prompt("請為此次卦象命名（例如：2026轉職請示）:");
