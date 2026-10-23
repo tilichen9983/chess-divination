@@ -10,7 +10,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 /* --------------------------------------------------------------------------
-   🎨 全新文青風視覺設定 (對齊截圖樣式)
+   🎨 文青風視覺設定
    -------------------------------------------------------------------------- */
 :root {
     --bg-main: #F9F6F0;       
@@ -37,7 +37,7 @@ body {
     background-color: var(--bg-main);
     color: var(--text-dark);
     margin: 0;
-    padding: 16px 12px;
+    padding: 12px 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -61,7 +61,7 @@ body::before {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 14px;
     position: relative;
     gap: 10px;
 }
@@ -96,16 +96,16 @@ body::before {
     .main-container {
         flex-direction: row;
         align-items: flex-start;
-        max-width: 1000px;
+        max-width: 1020px;
     }
-    .board-column { flex: 1; position: sticky; top: 20px; }
-    .control-column { width: 420px; flex-shrink: 0; }
+    .board-column { flex: 1; position: sticky; top: 16px; }
+    .control-column { width: 440px; flex-shrink: 0; }
 }
 
 .ui-card {
     background: var(--card-bg);
     border-radius: 20px;
-    padding: 20px;
+    padding: 18px;
     box-shadow: 0 8px 24px rgba(67, 85, 65, 0.06);
     border: 1px solid rgba(255,255,255,0.8);
     position: relative;
@@ -122,11 +122,13 @@ body::before {
 .intro-banner {
     background: linear-gradient(135deg, #FDFBF7, #F2EFE8);
     border-left: 4px solid var(--accent-gold);
-    padding: 14px 16px;
+    padding: 12px 14px;
     border-radius: 12px;
     font-size: 13px;
     line-height: 1.6;
     color: var(--text-muted);
+    margin-bottom: 14px;
+    text-align: left;
 }
 .intro-tags {
     display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap;
@@ -148,13 +150,13 @@ body::before {
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    min-height: 350px;
+    min-height: 290px;
 }
 
 .stage-sidebar {
     position: relative;
-    width: 70px;
-    margin-right: 16px;
+    width: 76px;
+    margin-right: 14px;
     flex-shrink: 0;
 }
 .stage-label {
@@ -164,34 +166,35 @@ body::before {
     transform: translateY(-50%);
     font-size: 12px;
     border-radius: 8px;
-    padding: 6px 4px;
-    color: #FFF;
+    padding: 5px 4px;
+    color: #3E3A35;
     font-weight: 700;
     text-align: center;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 6px rgba(62, 58, 53, 0.08);
+    border: 1px solid rgba(140, 115, 85, 0.2);
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 1px;
 }
-.stage-label .sub { font-size: 10px; font-weight: 400; opacity: 0.9; }
+.stage-label .sub { font-size: 10px; font-weight: 500; color: #5A534A; }
 
 .board-grid {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
     align-items: center;
     flex: 1;
 }
 .board-row {
     display: flex;
-    gap: 12px;
+    gap: 10px;
     justify-content: center;
 }
 
-.five-mode .board-grid { gap: 20px; }
-.five-mode .board-row { gap: 24px; }
-.five-mode .cell { width: 70px; height: 70px; }
-.five-mode .chess-piece { width: 64px; height: 64px; font-size: 26px; }
+.five-mode.board-grid { gap: 18px; padding: 10px 0; }
+.five-mode .board-row { gap: 22px; }
+.five-mode .cell { width: 68px; height: 68px; }
+.five-mode .chess-piece { width: 62px; height: 62px; font-size: 25px; }
 
 .cell {
     width: 50px;
@@ -211,8 +214,8 @@ body::before {
     box-shadow: 0 0 12px rgba(200, 90, 82, 0.35), inset 0 2px 5px rgba(62, 58, 53, 0.12);
 }
 .cell.active-target {
-    box-shadow: 0 0 0 4px rgba(192, 160, 98, 0.3), 0 8px 20px rgba(192, 160, 98, 0.3) !important;
-    transform: scale(1.08);
+    box-shadow: 0 0 0 4px rgba(192, 160, 98, 0.35), 0 8px 20px rgba(192, 160, 98, 0.3) !important;
+    transform: scale(1.06);
     border-style: solid;
     border-color: var(--accent-gold);
     z-index: 5;
@@ -227,7 +230,7 @@ body::before {
     pointer-events: none;
     user-select: none;
 }
-.board-grid.five-grid .cell-number { font-size: 22px; }
+.five-mode .cell-number { font-size: 21px; }
 .cell:not(.covered) .cell-number { display: none; }
 
 .chess-piece {
@@ -244,7 +247,7 @@ body::before {
     border: 2px solid;
     position: relative;
     z-index: 2;
-    animation: dropIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    animation: dropIn 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 .chess-piece::after {
     content: ''; position: absolute; inset: 3px; border-radius: 50%; border: 1px solid currentColor; opacity: 0.35; pointer-events: none;
@@ -262,7 +265,7 @@ body::before {
     100% { transform: scale(1) rotate(0deg); opacity: 1; }
 }
 
-/* 擲筊區 */
+/* ==================== 擲筊區 ==================== */
 .bobei-card {
     display: none;
     text-align: center;
@@ -293,39 +296,39 @@ body::before {
     transition: all 0.3s;
 }
 .bobei-light.lit {
-    background: #00BCD4;
+    background: #00ACC1;
     color: #FFF;
-    border-color: #0097A7;
-    box-shadow: 0 4px 12px rgba(0, 188, 212, 0.4);
+    border-color: #00838F;
+    box-shadow: 0 4px 12px rgba(0, 172, 193, 0.35);
 }
-/* 新增：當第三個聖筊達成時的特殊高亮色 (截圖中第三個也變亮) */
 .bobei-light.lit-gold {
-    background: var(--accent-gold);
+    background: linear-gradient(135deg, #D4A359, #B8863B);
     color: #FFF;
-    border-color: #B09050;
-    box-shadow: 0 4px 12px rgba(192, 160, 98, 0.4);
+    border-color: #9E6F27;
+    box-shadow: 0 4px 14px rgba(212, 163, 89, 0.55);
+    transform: scale(1.05);
 }
 
 .bobei-visual {
     display: flex;
     justify-content: center;
-    gap: 20px;
-    margin-bottom: 16px;
-    height: 80px;
+    gap: 24px;
+    margin-bottom: 14px;
+    height: 95px;
     align-items: center;
 }
 .bobei-svg {
-    width: 60px;
-    height: 70px;
+    width: 68px;
+    height: 88px;
     filter: drop-shadow(0 6px 8px rgba(44, 42, 41, 0.2));
     transition: transform 0.4s;
 }
 .bobei-svg.tossing {
-    animation: toss 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+    animation: toss 0.55s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 @keyframes toss {
     0% { transform: translateY(0) rotate(0) scale(1); }
-    50% { transform: translateY(-30px) rotate(180deg) scale(1.1); }
+    50% { transform: translateY(-28px) rotate(180deg) scale(1.1); }
     100% { transform: translateY(0) rotate(360deg) scale(1); }
 }
 
@@ -333,13 +336,13 @@ body::before {
     font-family: 'Noto Serif TC', serif;
     font-size: 18px;
     font-weight: 900;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 .bobei-result-desc {
     font-size: 13px;
     color: var(--text-muted);
     line-height: 1.5;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
 }
 
 .btn-primary {
@@ -347,18 +350,22 @@ body::before {
     color: #FFF;
     border: none;
     border-radius: 12px;
-    padding: 12px 24px;
+    padding: 12px 20px;
     font-size: 15px;
     font-weight: 700;
     cursor: pointer;
-    box-shadow: 0 4px 10px rgba(184, 66, 57, 0.3);
+    box-shadow: 0 4px 10px rgba(184, 66, 57, 0.28);
     transition: transform 0.15s, filter 0.15s;
     width: 100%;
     letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 .btn-primary:hover:not(:disabled) {
     filter: brightness(1.08);
-    transform: translateY(-2px);
+    transform: translateY(-1px);
 }
 .btn-primary:disabled {
     background: #CFC8BC;
@@ -367,7 +374,7 @@ body::before {
     cursor: not-allowed;
 }
 
-/* 控制區 */
+/* ==================== 右側/下方 控制區 ==================== */
 .control-column {
     display: flex;
     flex-direction: column;
@@ -379,7 +386,7 @@ body::before {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
 }
 .panel-top-bar h2 {
     font-family: 'Noto Serif TC', serif;
@@ -393,14 +400,14 @@ body::before {
     display: flex;
     gap: 8px;
     background: #EFEAE0;
-    padding: 6px;
+    padding: 5px;
     border-radius: 14px;
-    margin-bottom: 14px;
+    margin-bottom: 12px;
     border: 1px solid #DFD7C8;
 }
 .mode-tab {
     flex: 1;
-    padding: 10px 4px;
+    padding: 9px 4px;
     border: none;
     background: transparent;
     border-radius: 10px;
@@ -418,7 +425,7 @@ body::before {
     font-family: 'Noto Sans TC', sans-serif;
     font-size: 10px;
     font-weight: 400;
-    margin-top: 4px;
+    margin-top: 3px;
     opacity: 0.85;
 }
 .mode-tab.active {
@@ -427,7 +434,7 @@ body::before {
     box-shadow: 0 2px 6px rgba(62, 58, 53, 0.12);
 }
 
-/* 新增：占卜問題與類別下拉選單 */
+/* 卜卦類別下拉選單與問題輸入框 */
 .input-row {
     display: flex;
     gap: 8px;
@@ -436,14 +443,15 @@ body::before {
 .select-category {
     padding: 10px 8px;
     border-radius: 8px;
-    border: 1px solid var(--border-soft);
-    background: #F9F7F3;
+    border: 1.5px solid #D5CBB8;
+    background: #FFFDF9;
     font-size: 13px;
-    color: var(--text-dark);
+    color: #5C4938;
     font-weight: 700;
     outline: none;
-    width: 100px;
+    width: 118px;
     flex-shrink: 0;
+    cursor: pointer;
 }
 .select-category:focus { border-color: var(--accent-gold); }
 .question-input {
@@ -462,7 +470,7 @@ body::before {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 8px;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
 }
 .btn-grid {
     color: #FFF;
@@ -476,7 +484,7 @@ body::before {
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     white-space: nowrap;
 }
-.btn-grid:hover { filter: brightness(1.1); transform: translateY(-1px); }
+.btn-grid:hover { filter: brightness(1.08); transform: translateY(-1px); }
 .btn-restart { background: #CD5C5C; } 
 .btn-save    { background: #5D6D7E; } 
 .btn-load    { background: #829460; } 
@@ -486,43 +494,54 @@ body::before {
 #completeMsg {
     text-align: left;
     color: #3E3A35;
-    margin-bottom: 16px;
-    line-height: 1.7;
-    font-size: 14px;
-    background: #EFF5F0;
-    border-radius: 10px;
+    margin-bottom: 14px;
+    line-height: 1.75;
+    font-size: 13.5px;
+    background: #F4F8F4;
+    border-radius: 12px;
     padding: 0;
     display: none;
 }
 #completeMsg:not(:empty) {
-    padding: 16px;
-    border: 1px solid #C8DFCE;
+    padding: 14px 16px;
+    border: 1.5px solid #C2DBC6;
     display: block;
-    animation: fadeIn 0.4s ease;
+    animation: fadeInSlide 0.35s ease;
+}
+
+.oracle-main-box {
+    background: #FFFFFF;
+    border-left: 4px solid var(--accent-gold);
+    padding: 10px 12px;
+    border-radius: 8px;
+    margin: 8px 0;
+    font-weight: 500;
+    color: #2C2A29;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
 }
 
 .status-box {
     background: #F9F7F3;
     border-radius: 12px;
-    padding: 16px;
+    padding: 12px 14px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     border: 1px solid var(--border-soft);
-    margin-bottom: 16px;
+    margin-bottom: 12px;
 }
 .status-text {
     display: flex;
     flex-direction: column;
     gap: 4px;
 }
-.status-text .step { font-size: 12px; font-weight: 700; color: var(--accent-gold); }
-.status-text .remain { font-size: 24px; font-weight: 900; color: var(--chess-red); font-family: 'Noto Serif TC', serif; line-height: 1; }
-.status-text .desc { font-size: 11px; color: var(--text-muted); }
+.status-text .step { font-size: 12px; font-weight: 700; color: #8C6239; }
+.status-text .remain { font-size: 22px; font-weight: 900; color: var(--chess-red); font-family: 'Noto Serif TC', serif; line-height: 1; }
+.status-text .desc { font-size: 11.5px; color: var(--text-muted); }
 
 .drawn-preview {
-    width: 60px;
-    height: 60px;
+    width: 56px;
+    height: 56px;
     background: #EAE4D7;
     border-radius: 10px;
     border: 1px inset #D8D0C0;
@@ -531,49 +550,58 @@ body::before {
     justify-content: center;
 }
 
-.scatter-area {
-    position: relative;
-    height: 240px;
-    background: radial-gradient(circle at center, #EAE3D5 0%, #DED5C4 100%);
-    border-radius: 12px;
-    border: 1px solid #D0C6B4;
-    overflow: hidden;
-    box-shadow: inset 0 4px 12px rgba(44, 42, 41, 0.05);
+/* 散落區：標題獨立在上方，絕不覆蓋下方棋子 */
+.scatter-wrapper {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px dashed var(--border-soft);
+    padding-top: 10px;
 }
 .scatter-header {
-    position: absolute;
-    top: 0; left: 0; right: 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    z-index: 20;
-    padding: 12px 16px;
-    background: linear-gradient(to bottom, rgba(234, 227, 213, 0.9) 0%, rgba(234, 227, 213, 0) 100%);
-    pointer-events: none; /* 讓點擊可以穿透到底下棋子 */
+    margin-bottom: 8px;
+    padding: 0 2px;
 }
-.scatter-header h3 { margin: 0; font-size: 14px; font-weight: 700; color: var(--text-dark); pointer-events: auto; }
+.scatter-header h3 {
+    margin: 0;
+    font-family: 'Noto Serif TC', serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-dark);
+}
 .btn-small {
     background: var(--accent-gold);
     border: none;
     color: #FFF;
-    padding: 6px 14px;
+    padding: 5px 12px;
     border-radius: 6px;
     font-size: 12px;
     font-weight: 700;
     cursor: pointer;
     box-shadow: 0 2px 4px rgba(184, 150, 85, 0.25);
     transition: background 0.2s;
-    pointer-events: auto;
 }
 .btn-small:hover:not(:disabled) { background: #A38242; }
 .btn-small:disabled { background: #D0C9BC; color: #8C857B; cursor: not-allowed; box-shadow: none; }
 
+.scatter-area {
+    position: relative;
+    height: 215px;
+    background: radial-gradient(circle at center, #EAE3D5 0%, #DED5C4 100%);
+    border-radius: 12px;
+    border: 2px solid #D0C6B4;
+    overflow: hidden;
+    box-shadow: inset 0 3px 10px rgba(44, 42, 41, 0.08);
+}
+
 .scatter-piece {
     position: absolute;
-    width: 36px;
-    height: 36px;
-    margin-left: -18px;
-    margin-top: -18px;
+    width: 34px;
+    height: 34px;
+    margin-left: -17px;
+    margin-top: -17px;
     border-radius: 50%;
     background-image:
         radial-gradient(circle at 24% 28%, rgba(255, 223, 100, 0.95) 0.6px, transparent 1.8px),
@@ -593,8 +621,8 @@ body::before {
     border-radius: 50%; border: 1px dashed rgba(255, 215, 0, 0.55); pointer-events: none;
 }
 .scatter-piece:hover {
-    transform: scale(1.1) !important;
-    box-shadow: 0 6px 16px rgba(212, 163, 89, 0.6);
+    transform: scale(1.12) !important;
+    box-shadow: 0 6px 16px rgba(212, 163, 89, 0.65);
     border-color: #E6C17A;
     z-index: 100 !important;
 }
@@ -607,30 +635,25 @@ body::before {
     z-index: 1000; display: none; align-items: center; justify-content: center; padding: 16px;
 }
 .modal-overlay.active { display: flex; }
-.modal-card { background: var(--card-bg); width: 100%; max-width: 400px; border-radius: 20px; padding: 24px; box-shadow: 0 12px 40px rgba(0,0,0,0.2); position: relative; }
-.modal-card h3 { font-family: 'Noto Serif TC', serif; color: var(--primary-dark); margin: 0 0 16px 0; font-size: 20px; }
+.modal-card { background: var(--card-bg); width: 100%; max-width: 400px; border-radius: 20px; padding: 24px; box-shadow: 0 12px 40px rgba(0,0,0,0.2); position: relative; text-align: left; }
+.modal-card h3 { font-family: 'Noto Serif TC', serif; color: var(--primary-dark); margin: 0 0 12px 0; font-size: 20px; }
 .modal-close { position: absolute; top: 16px; right: 16px; background: #F0EBE1; border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 16px; }
 .modal-input { width: 100%; padding: 12px; border: 1px solid var(--border-soft); border-radius: 10px; margin-bottom: 12px; font-size: 14px; background: #F9F7F3; }
 .modal-input:focus { outline: none; border-color: var(--accent-gold); background: #FFF; }
 
 .loading-spinner {
-    display: inline-block;
+    display: none;
     width: 18px; height: 18px;
-    border: 3px solid rgba(255,255,255,0.3);
+    border: 2.5px solid rgba(255,255,255,0.35);
     border-top-color: #FFF;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
-    vertical-align: middle;
-    margin-right: 8px;
-    display: none;
+    animation: spin 0.8s linear infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 @media (max-width: 849px) {
-    body { padding: 4px 4px 340px 4px; }
-    .control-column { position: fixed; bottom: 0; left: 0; right: 0; padding: 0 4px 4px 4px; z-index: 500; }
-    .control-column .ui-card { max-width: 460px; margin: 0 auto; background: rgba(252, 251, 249, 0.98); backdrop-filter: blur(8px); box-shadow: 0 -4px 18px rgba(62, 58, 53, 0.15); border: 1px solid #D5CBB8; padding: 12px; }
-    .scatter-area { height: 160px; }
+    body { padding: 6px 6px 24px 6px; }
+    .scatter-area { height: 185px; }
 }
 </style>
 </head>
@@ -646,9 +669,13 @@ body::before {
     <div class="board-column">
         <div class="ui-card" id="captureTarget">
             <div class="intro-banner" id="introBanner">
-                <div class="intro-tags"><span class="intro-tag">#單點解惑</span><span class="intro-tag">#當下抉擇</span><span class="intro-tag">#免八字翻棋</span></div>
+                <div class="intro-tags">
+                    <span class="intro-tag">#單點解惑</span>
+                    <span class="intro-tag">#當下抉擇</span>
+                    <span class="intro-tag">#免八字翻棋</span>
+                </div>
                 <span class="quote">「人生如棋，局局新。如果你正猶豫該前進還是轉彎，讓棋子的黑紅對白，為你照亮迷霧中的下一步。」</span>
-                這不是嚴肅的算命，而是透過象棋的方寸之地，把糾結的心事攤開。請默念問題，挑選五顆棋子依序排入 1～5 格。
+                這不是嚴肅的算命，而是透過象棋的方寸之地，把糾結的心事攤開，看清接下來該怎麼走。請默念問題，挑選五顆棋子依序排入 1～5 格。
             </div>
 
             <div class="board-card-inner">
@@ -669,8 +696,8 @@ body::before {
                 <div class="bobei-light" id="light-3">第三聖筊</div>
             </div>
             <div class="bobei-visual">
-                <svg class="bobei-svg" viewBox="0 0 100 90" id="cupLeft"></svg>
-                <svg class="bobei-svg" viewBox="0 0 100 90" id="cupRight"></svg>
+                <svg class="bobei-svg" viewBox="0 0 100 140" id="cupLeft"></svg>
+                <svg class="bobei-svg" viewBox="0 0 100 140" id="cupRight"></svg>
             </div>
             <div class="bobei-result-badge" id="bobeiBadge" style="color:var(--text-muted);">請誠心默念問題後點擊擲筊</div>
             <div class="bobei-result-desc" id="bobeiDesc">連續擲出三個聖筊，即代表確認此卦為最佳解答。</div>
@@ -695,9 +722,9 @@ body::before {
                 </button>
             </div>
 
-            <!-- 新增：卜卦類別下拉選單與問題輸入框 -->
+            <!-- 卜卦類別下拉選單與問題輸入框 (選變類別時若已解卦會自動即時更新解卦方向) -->
             <div class="input-row">
-                <select id="queryCategory" class="select-category">
+                <select id="queryCategory" class="select-category" onchange="onCategoryChange()">
                     <option value="感情">💖 感情</option>
                     <option value="工作">💼 工作</option>
                     <option value="財運">💰 財運</option>
@@ -706,7 +733,7 @@ body::before {
                     <option value="決策">🛤️ 決策</option>
                     <option value="健康狀態">🌿 健康狀態</option>
                 </select>
-                <input type="text" id="userQuestion" class="question-input" placeholder="✍️ 想請示的問題細節 (選填)">
+                <input type="text" id="userQuestion" class="question-input" placeholder="✍️ 請選擇左側類別，可補充問題細節">
             </div>
 
             <div class="action-grid">
@@ -716,17 +743,17 @@ body::before {
                 <button class="btn-grid btn-capture" onclick="captureBoard()">📸 截圖命盤</button>
             </div>
 
-            <!-- ★ 解卦觸發按鈕 (自動出現) -->
+            <!-- ★ 解卦觸發按鈕 -->
             <button class="btn-primary" id="btnAnalyze" onclick="getShortSummary()" style="display:none; margin-bottom: 12px; background: var(--accent-gold);">
                 <span class="loading-spinner" id="summarySpinner"></span>
-                📜 指導靈已確認，點此進行解卦
+                <span id="btnAnalyzeText">📜 指導靈已確認，點此進行解卦</span>
             </button>
 
-            <!-- ★ 50字解卦結果顯示區 -->
+            <!-- ★ 50字分類解卦結果顯示區 -->
             <div id="completeMsg"></div>
 
             <!-- ★ 索取完整解卦 -->
-            <button class="btn-primary" id="btnRequestFull" onclick="openRequestForm()" style="display:none; margin-bottom: 16px; background: var(--primary-dark);">
+            <button class="btn-primary" id="btnRequestFull" onclick="openRequestForm()" style="display:none; margin-bottom: 14px; background: var(--primary-dark);">
                 📸 提交卦象圖 (索取大師完整解卦)
             </button>
 
@@ -736,16 +763,17 @@ body::before {
                     <div><span class="remain" id="poolCount">5</span> <span class="desc" id="poolDesc">本局尚需挑選 (牌池剩32顆)</span></div>
                 </div>
                 <div class="drawn-preview" id="drawnPreview">
-                    <span style="font-size:11px; color:#CCC;">待翻</span>
+                    <span style="font-size:11px; color:#AAA;">待翻</span>
                 </div>
             </div>
 
-            <div class="scatter-area">
+            <!-- 卜卦散落區：標題獨立於畫布上方，絕不遮擋棋子 -->
+            <div class="scatter-wrapper">
                 <div class="scatter-header">
-                    <h3>✨ 卜卦區 (請憑直覺選)</h3>
-                    <button class="btn-small" id="shuffleBtn" onclick="shufflePool()">洗牌 (剩 3)</button>
+                    <h3>✨ 卜卦區（請憑直覺點選）</h3>
+                    <button class="btn-small" id="shuffleBtn" onclick="shufflePool()">✋ 洗牌 (剩 3 次)</button>
                 </div>
-                <div id="scatterPool"></div>
+                <div class="scatter-area" id="scatterPool"></div>
             </div>
         </div>
     </div>
@@ -757,31 +785,38 @@ body::before {
         <button class="modal-close" onclick="closeRequestForm()">✕</button>
         <h3>索取大師深度解卦</h3>
         <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px; line-height: 1.5;">
-            AI 提供的 50 字神諭為初步方向參考。若需為您的現狀提供最客製化的深度排盤解析，請留下您的聯繫方式，系統將為您擷取命盤圖傳送給大師。
+            50 字精要神諭為初步方向指引。若需針對您的現況進行完整生剋與流年深度解析，請留下您的聯繫方式，系統將自動擷取命盤圖傳送給大師（alongchen0106@gmail.com）。
         </p>
         <input type="text" id="reqName" class="modal-input" placeholder="您的稱呼 (姓名/暱稱)">
         <input type="email" id="reqEmail" class="modal-input" placeholder="您的電子信箱 (報告寄送處)">
         <button class="btn-primary" id="submitRequestBtn" onclick="submitFullRequest()">
-            <span class="loading-spinner" id="submitSpinner"></span> 📨 確認送出
+            <span class="loading-spinner" id="submitSpinner"></span>
+            <span id="submitBtnText">📨 索取完整解卦</span>
         </button>
     </div>
 </div>
 
 <script>
 // =========================================================================
-// 🔑 請在此填入您的 Google Apps Script Web App URL
+// 🔑 若已部署 Google Apps Script 寄信後端，請將 /exec 網址填於下方雙引號內
 // =========================================================================
-const GAS_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbzxO4t0_FXbGhKdejB-sjEdaeQz8wDSfIYnCtVzkGS0LGhVWK2QOVmQnCIFVdIaRwO05Q/exec"; 
+const GAS_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbzxO4t0_FXbGhKdejB-sjEdaeQz8wDSfIYnCtVzkGS0LGhVWK2QOVmQnCIFVdIaRwO05Q"; 
 
 const pieceSet = [
-    {name:'帥', color:'red'}, {name:'仕', color:'red'}, {name:'仕', color:'red'},
-    {name:'相', color:'red'}, {name:'相', color:'red'}, {name:'俥', color:'red'}, {name:'俥', color:'red'},
-    {name:'傌', color:'red'}, {name:'傌', color:'red'}, {name:'炮', color:'red'}, {name:'炮', color:'red'},
-    {name:'兵', color:'red'}, {name:'兵', color:'red'}, {name:'兵', color:'red'}, {name:'兵', color:'red'}, {name:'兵', color:'red'},
-    {name:'將', color:'black'}, {name:'士', color:'black'}, {name:'士', color:'black'},
-    {name:'象', color:'black'}, {name:'象', color:'black'}, {name:'車', color:'black'}, {name:'車', color:'black'},
-    {name:'馬', color:'black'}, {name:'馬', color:'black'}, {name:'包', color:'black'}, {name:'包', color:'black'},
-    {name:'卒', color:'black'}, {name:'卒', color:'black'}, {name:'卒', color:'black'}, {name:'卒', color:'black'}, {name:'卒', color:'black'}
+    {name:'帥', color:'red', group:'將帥', score:80},
+    {name:'仕', color:'red', group:'士仕', score:60}, {name:'仕', color:'red', group:'士仕', score:60},
+    {name:'相', color:'red', group:'象相', score:40}, {name:'相', color:'red', group:'象相', score:40},
+    {name:'俥', color:'red', group:'車俥', score:30}, {name:'俥', color:'red', group:'車俥', score:30},
+    {name:'傌', color:'red', group:'馬傌', score:20}, {name:'傌', color:'red', group:'馬傌', score:20},
+    {name:'炮', color:'red', group:'包炮', score:15}, {name:'炮', color:'red', group:'包炮', score:15},
+    {name:'兵', color:'red', group:'兵卒', score:10}, {name:'兵', color:'red', group:'兵卒', score:10}, {name:'兵', color:'red', group:'兵卒', score:10}, {name:'兵', color:'red', group:'兵卒', score:10}, {name:'兵', color:'red', group:'兵卒', score:10},
+    {name:'將', color:'black', group:'將帥', score:80},
+    {name:'士', color:'black', group:'士仕', score:60}, {name:'士', color:'black', group:'士仕', score:60},
+    {name:'象', color:'black', group:'象相', score:40}, {name:'象', color:'black', group:'象相', score:40},
+    {name:'車', color:'black', group:'車俥', score:30}, {name:'車', color:'black', group:'車俥', score:30},
+    {name:'馬', color:'black', group:'馬傌', score:20}, {name:'馬', color:'black', group:'馬傌', score:20},
+    {name:'包', color:'black', group:'包炮', score:15}, {name:'包', color:'black', group:'包炮', score:15},
+    {name:'卒', color:'black', group:'兵卒', score:10}, {name:'卒', color:'black', group:'兵卒', score:10}, {name:'卒', color:'black', group:'兵卒', score:10}, {name:'卒', color:'black', group:'兵卒', score:10}, {name:'卒', color:'black', group:'兵卒', score:10}
 ];
 
 const fiveLayout = [{nums:[4]}, {nums:[2,1,3]}, {nums:[5]}];
@@ -792,15 +827,82 @@ const fullLayout = [
 ];
 
 const stageRanges = [
-    {title:'總格', range:[1,4], color:'#6A7B68', align:2},
-    {title:'學習', sub:'11-20歲', range:[5,8], color:'#B2A48C', align:7},
-    {title:'情感', sub:'21-30歲', range:[9,12], color:'#C2877B', align:11},
-    {title:'事業', sub:'31-40歲', range:[13,16], color:'#C0A062', align:15},
-    {title:'41-50', range:[17,20], color:'#768775', align:19},
-    {title:'51-60', range:[21,24], color:'#8C7B8E', align:23},
-    {title:'61-70', range:[25,28], color:'#BC8B6C', align:27},
-    {title:'71-80', range:[29,32], color:'#8A8F8D', align:31}
+    {key:'總格', title:'總格', range:[1,4], color:'#E8E2D5', align:2},
+    {key:'學習格', title:'學習格', sub:'11-20歲', range:[5,8], color:'#D4E4EC', align:7},
+    {key:'情感格', title:'情感格', sub:'21-30歲', range:[9,12], color:'#F2D6D8', align:11},
+    {key:'事業格', title:'事業格', sub:'31-40歲', range:[13,16], color:'#F3E3C3', align:15},
+    {key:'41-50', title:'41-50歲', range:[17,20], color:'#D5E6D6', align:19},
+    {key:'51-60', title:'51-60歲', range:[21,24], color:'#E2D5E8', align:23},
+    {key:'61-70', title:'61-70歲', range:[25,28], color:'#F5D9C8', align:27},
+    {key:'71-80', title:'71-80歲', range:[29,32], color:'#D8E0E5', align:31}
 ];
+
+// ===================== 依據《象棋-字義篇》與《格局篇》建立之七大類別精準解卦庫 =====================
+const categoryGuidanceDB = {
+    '感情': {
+        '將帥': '主導意識較強，易期待對方照自己的標準走；放下掌控與面子、多傾聽包容，關係方能回溫。',
+        '士仕': '重視精神契合與原則，防因高標準或冷戰拉開距離；溫和表達內心在乎，有助遇見靈魂伴侶。',
+        '象相': '情感溫和內斂卻偏被動，容易委屈自己或情緒起伏；主動表達需求並立下健康界線，感情更穩定。',
+        '車俥': '直球坦率、敢愛敢恨，但防心直口快傷人（刀子嘴豆腐心）；放慢溝通節奏，避免硬碰硬爭執。',
+        '馬傌': '互動活絡且渴望浪漫，但中心逢馬易心猿意馬或單向奔波；釐清真心所向，忌三心二意。',
+        '包炮': '桃花與吸引力強，渴望激情突破，但防猜忌與不安全感；隔山交流或給彼此空間反而更甜蜜。',
+        '兵卒': '務實重陪伴、過日子優先，雖少浪漫激情但穩定專一；勿胡思亂想，踏實經營即是長久良緣。'
+    },
+    '工作': {
+        '將帥': '具大局觀與統御力，宜抓大放小、授權分工；忌剛愎獨攬，若見兵卒相伴則得力助手俱足。',
+        '士仕': '專業口碑佳且具策劃力，易得上司貴人賞識；保持彈性勿過度挑剔細節，升遷與管理皆順遂。',
+        '象相': '策劃與整合力佳，利於公職、教學或身心靈服務；惟需克服拖延被動，化想法為實際行動。',
+        '車俥': '執行力與衝勁極強，利於獨立開創與速戰速決；適合分工不宜合夥，切忌急躁衝過頭。',
+        '馬傌': '利於業務奔走、公關交際與資源整合；若困於中心則易瞎忙受限，需主動向外開拓新客源。',
+        '包炮': '靈感豐富、善抓時機突破，利於創新或流動性業務；忌眼高手低想走捷徑，落實根基方能成局。',
+        '兵卒': '一步一腳印、按部就班最能累積實績；莫因缺乏自信而退縮，穩紮穩打終能迎來轉機。'
+    },
+    '財運': {
+        '將帥': '財運格局宏大、大開大合，具備掌財氣勢；忌因好勝心重而孤注一擲，穩健配置可獲豐厚回報。',
+        '士仕': '正財與投資運穩健，可憑專業聲譽與貴人引路得財；有來有往、大吉大利，切忌過度多慮錯失良機。',
+        '象相': '利於不動產、長線儲蓄與小本穩健經營；可因好運或善緣得財，不宜從事高風險短線投機。',
+        '車俥': '憑強大執行力主動開源，賺錢速度快但防大起大落；切忌衝動投資，獨立掌控財務最安全。',
+        '馬傌': '動中生財、奔波見利，透過人脈串聯與跨界整合可轉為錢脈；不適合死守靜態財。',
+        '包炮': '具以小博大之偏財與靈感財機遇，但防貪快投機或受人鼓動破財；見好就收方能守住獲利。',
+        '兵卒': '兵卒為現金財庫，適合聚沙成塔、定期儲蓄；忌投機求快，守住紀律即可累積踏實財富。'
+    },
+    '學業': {
+        '將帥': '理解與統整力強，能舉一反三；但防只聽自己主見而忽略教材重點，放下成見吸收更快。',
+        '士仕': '文昌星顯耀，邏輯清晰、考運亨通，極利於考取證照、公職與升學；按計畫複習必有佳績。',
+        '象相': '悟性高且擅長整合歸納，惟行動力稍慢、易拖延；建立固定讀書儀式與進度表即可突破。',
+        '車俥': '學習積極、吸收極快，但防三分鐘熱度與粗心略過細節；耐心加強精讀可拿高分。',
+        '馬傌': '點子多、善用圖像或巧思輔助記憶；惟需防分心與同時學太多雜項，專注單一目標方能學以致用。',
+        '包炮': '直覺敏銳、靈感強，適合突破瓶頸；切忌臨時抱佛腳或想一步登天，扎實基本功最關鍵。',
+        '兵卒': '按部就班、聽話照做，基礎最為扎實；只要克服考前緊張與自我懷疑，穩健發揮即見成果。'
+    },
+    '人際': {
+        '將帥': '氣場強大具號召力，但防給人高冷或壓迫感；溫和傾聽並肯定他人付出，更能得人心。',
+        '士仕': '重禮數與形象，擇友標準高；適度放下完美主義與說教框架，人際互動會更親近融洽。',
+        '象相': '善解人意、具同理心與包容力，人緣溫和；惟需懂得拒絕不合理請託，避免背負他人課題而內耗。',
+        '車俥': '講義氣、坦率真誠，但防講話太直接無意傷人；遇到分歧時「以柔克剛」，切莫意氣用事。',
+        '馬傌': '長袖善舞、察言觀色，交際手腕靈活；但防因好管閒事或過度討好而捲入是非，保持真誠最吉。',
+        '包炮': '親和力強、受人歡迎，但內心較敏感多疑；遠離表面八卦與小人圈，真誠交流方得知己。',
+        '兵卒': '重信用、務實可靠，同儕合作默契佳；不必過度在意他人眼光，展現自信更能贏得尊重。'
+    },
+    '決策': {
+        '將帥': '主導權在手，方向明確即可果斷拍板；但若周遭無兵卒呼應（暴動格），則需暫緩重大決定以免誤判。',
+        '士仕': '宜理性評估法規與專業數據，請益有經驗之長輩貴人；謀定而後動，勝算極高。',
+        '象相': '現階段宜守不宜攻，先求安穩與全盤布局；給自己一點沉澱時間，答案自然明朗。',
+        '車俥': '時機已到宜快刀斬亂麻、主動出擊；但務必做好風險控管，切忌一時衝動孤注一擲。',
+        '馬傌': '面臨多重選擇易舉棋不定；建議跳出原有框架，選擇最具彈性與發展空間的方案。',
+        '包炮': '局勢存在跳躍性轉機，需靠奇招或第三方助力破局；若條件未明朗，切勿憑僥倖心態貿然出手。',
+        '兵卒': '不宜跨大步或做高風險改變，選擇最務實、可逐步推進的方案，穩紮穩打即是最好的決策。'
+    },
+    '健康狀態': {
+        '將帥': '五行屬金，留意頭部、中樞神經、睡眠品質與呼吸系統；放鬆掌控欲，多到大自然深呼吸。',
+        '士仕': '五行屬金，留意支氣管、肺部、鼻過敏與大腸消化；若受剋亦需注意防範刀關與意外小擦傷。',
+        '象相': '五行屬火，留意心血管循環、血壓、心悸與小腸吸收；保持情緒平穩、少熬夜，防代謝發胖。',
+        '車俥': '五行屬木，怒傷肝，留意肝膽代謝、眼睛疲勞、筋骨與行車安全；放慢生活步調、舒緩壓力。',
+        '馬傌': '五行屬木，留意四肢關節、筋絡酸痛、脊椎與運動跌倒；運動前務必暖身，讓身心適度休息。',
+        '包炮': '五行屬水，恐傷腎，留意腎臟泌尿、內分泌、婦科與用腦過度失眠；戒除焦慮，多補充水分。',
+        '兵卒': '五行屬土，思傷胃，留意脾胃消化、脹氣、胃食道逆流與肌肉流失；減少胡思亂想，飲食定時定量。'
+    }
+};
 
 let currentMode = 'five';
 let maxPieces = 5;
@@ -810,6 +912,7 @@ let shuffleLeft = 3;
 let currentIndex = 0;
 let shengCount = 0;
 let isVerified = false;
+let hasAnalyzed = false;
 let boardImageB64 = "";
 
 function initBoard() {
@@ -895,8 +998,8 @@ function renderPool() {
     for(let r=0; r<4; r++) {
         for(let c=0; c<8; c++) {
             positions.push({
-                x: (c+0.5)*(100/8) + (Math.random()-0.5)*2,
-                y: (r+0.5)*(100/4) + (Math.random()-0.5)*4,
+                x: (c+0.5)*(100/8) + (Math.random()-0.5)*2.2,
+                y: (r+0.5)*(100/4) + (Math.random()-0.5)*4.2,
                 rot: Math.random()*360
             });
         }
@@ -920,7 +1023,7 @@ function renderPool() {
 function shufflePool() {
     if (currentIndex > 0 || shuffleLeft <= 0) return;
     shuffleLeft--;
-    document.getElementById('shuffleBtn').textContent = `洗牌 (剩 ${shuffleLeft})`;
+    document.getElementById('shuffleBtn').textContent = shuffleLeft > 0 ? `✋ 洗牌 (剩 ${shuffleLeft} 次)` : `✋ 洗牌 (已用盡)`;
     if (shuffleLeft === 0) document.getElementById('shuffleBtn').disabled = true;
     
     remaining = remaining.sort(() => Math.random() - 0.5);
@@ -928,7 +1031,7 @@ function shufflePool() {
     
     pieces.forEach(el => {
         el.style.left = '50%'; el.style.top = '50%';
-        el.style.transform = `rotate(${Math.random()*360}deg) scale(1.1)`;
+        el.style.transform = `rotate(${Math.random()*360}deg) scale(1.08)`;
     });
     
     setTimeout(renderPool, 400);
@@ -947,13 +1050,14 @@ function updateStatusUI() {
         
     if(currentIndex > 0) {
         document.getElementById('shuffleBtn').disabled = true;
-        document.getElementById('shuffleBtn').textContent = '已鎖定';
+        document.getElementById('shuffleBtn').textContent = '🔒 排盤中不可洗牌';
     }
 }
 
 function pickPiece(idx, el) {
     if (currentIndex >= maxPieces) return;
     const p = remaining[idx];
+    if (!p) return;
     remaining[idx] = null;
     el.classList.add('drawn');
     
@@ -970,7 +1074,7 @@ function pickPiece(idx, el) {
     cell.appendChild(cp);
     
     const preview = document.getElementById('drawnPreview');
-    preview.innerHTML = `<div class="chess-piece ${p.color}" style="transform:scale(0.85);">${p.name}</div>`;
+    preview.innerHTML = `<div class="chess-piece ${p.color}" style="transform:scale(0.82);">${p.name}</div>`;
     
     document.querySelectorAll('.cell.active-target').forEach(c => c.classList.remove('active-target'));
     const nextCell = document.getElementById(`cell-${currentIndex+1}`);
@@ -988,8 +1092,9 @@ function pickPiece(idx, el) {
             initBobei();
         } else {
             const btnAnalyze = document.getElementById('btnAnalyze');
-            btnAnalyze.textContent = '📜 命盤排列完成，點此進行解卦';
-            btnAnalyze.style.display = 'block';
+            document.getElementById('btnAnalyzeText').textContent = '📜 命盤排列完成，點此進行解卦';
+            btnAnalyze.disabled = false;
+            btnAnalyze.style.display = 'flex';
             setTimeout(() => btnAnalyze.scrollIntoView({behavior:'smooth', block:'center'}), 200);
         }
     }
@@ -1022,12 +1127,8 @@ function updateBobeiLights() {
         const light = document.getElementById(`light-${i}`);
         light.classList.remove('lit', 'lit-gold');
         if (i <= shengCount) {
-            // 如果是第三顆聖筊達成，顯示亮眼的金色，否則顯示一般的青藍色
-            if (shengCount === 3 && i === 3) {
+            if (shengCount >= 3) {
                 light.classList.add('lit-gold');
-                // 同時將前兩顆也染成金色以示慶祝
-                document.getElementById('light-1').classList.replace('lit', 'lit-gold');
-                document.getElementById('light-2').classList.replace('lit', 'lit-gold');
             } else {
                 light.classList.add('lit');
             }
@@ -1057,107 +1158,223 @@ function throwBobei() {
         
         if (r1 !== r2) {
             shengCount++;
-            badge.textContent = `✨ 聖筊 (允筊) | 連續 ${shengCount} 次`;
-            badge.style.color = '#B23A30';
-            desc.textContent = '神明允許，行事順利。';
-            updateBobeiLights(); // 先更新燈號
+            updateBobeiLights();
 
             if (shengCount >= 3) {
                 isVerified = true;
                 badge.textContent = '🌟 已獲三聖筊認證！';
                 badge.style.color = 'var(--accent-gold)';
-                desc.textContent = '指導靈已確認，請點擊下方按鈕進行解卦。';
-                btn.textContent = '認證成功';
+                desc.textContent = '指導靈已確認此卦象！請先確認右方「卜卦類別」，再點擊解卦按鈕。';
+                btn.textContent = '✨ 認證成功';
                 
                 const analyzeBtn = document.getElementById('btnAnalyze');
-                analyzeBtn.innerHTML = '<span class="loading-spinner" id="summarySpinner"></span> 📜 指導靈已確認，點此進行解卦';
-                analyzeBtn.style.display = 'block';
-                setTimeout(() => analyzeBtn.scrollIntoView({behavior:'smooth', block:'center'}), 200);
+                document.getElementById('btnAnalyzeText').textContent = '📜 指導靈已確認，點此進行解卦';
+                analyzeBtn.disabled = false;
+                analyzeBtn.style.display = 'flex';
+                setTimeout(() => analyzeBtn.scrollIntoView({behavior:'smooth', block:'center'}), 250);
                 return;
+            } else {
+                badge.textContent = `✨ 聖筊 (允筊) ｜ 連續 ${shengCount} 次`;
+                badge.style.color = '#0097A7';
+                desc.textContent = '神明允許同意、行事順利，請再接再厲擲出三聖筊。';
             }
         } else if (r1 === 'yang') {
             shengCount = 0;
             updateBobeiLights();
-            badge.textContent = '😊 笑筊 | 次數歸零';
+            badge.textContent = '😊 笑筊 ｜ 連續次數歸零';
             badge.style.color = '#E67E22';
-            desc.textContent = '神明一笑，請重新敘述問題再擲。';
+            desc.textContent = '神明一笑或考慮中，請將心願與問題說得更清楚後重新擲筊。';
         } else {
             shengCount = 0;
             updateBobeiLights();
-            badge.textContent = '🌧️ 陰筊 (無筊) | 次數歸零';
-            badge.style.color = '#555';
-            desc.textContent = '神明否定或不宜行事，請重新請示。';
+            badge.textContent = '🌧️ 陰筊 (無筊) ｜ 連續次數歸零';
+            badge.style.color = '#C0392B';
+            desc.textContent = '方向未明或時機未到，請靜心調整呼吸後重新擲筊請示。';
         }
         btn.disabled = false;
         btn.textContent = '🌙 繼續誠心擲筊';
-    }, 600);
+    }, 550);
+}
+
+// ===================== ★ 智慧檢測五子格局 (依據《象棋-格局篇》) =====================
+function detectFivePatterns(piecesObj) {
+    const arr = [1,2,3,4,5].map(i => piecesObj[i]).filter(Boolean);
+    if (arr.length < 5) return [];
+
+    const patterns = [];
+    const redCount = arr.filter(p => p.color === 'red').length;
+    const blackCount = arr.length - redCount;
+    const c1 = piecesObj[1];
+
+    // 1. 全紅 / 全黑 (悔恨格)
+    if (redCount === 5 || blackCount === 5) {
+        patterns.push({name:'全紅/全黑格', hint:'陰陽未調，預期與結果易有落差，宜放下執念、重新調整步調。'});
+    }
+
+    // 2. 好朋友格 (中間與旁邊有同組異色，馬傌斜對，包炮隔山)
+    let hasFriend = false;
+    [2,3,4,5].forEach(pos => {
+        const p = piecesObj[pos];
+        if (p && p.group === c1.group && p.color !== c1.color && p.group !== '馬傌' && p.group !== '包炮') {
+            hasFriend = true;
+        }
+    });
+    if ((piecesObj[2].group === '包炮' && piecesObj[3].group === '包炮' && piecesObj[2].color !== piecesObj[3].color) ||
+        (piecesObj[4].group === '包炮' && piecesObj[5].group === '包炮' && piecesObj[4].color !== piecesObj[5].color)) {
+        hasFriend = true;
+    }
+    if (hasFriend) {
+        patterns.push({name:'好朋友格', hint:'貴人相助、彼此互利，所問之事方向正確且有成局機會！'});
+    }
+
+    // 3. 明君格 (將見兵、帥見卒)
+    const names = arr.map(p => p.name);
+    if ((names.includes('將') && names.includes('兵')) || (names.includes('帥') && names.includes('卒'))) {
+        patterns.push({name:'明君格', hint:'上下同心、互為貴人，能穩定心性並掌握主導權。'});
+    } else if (names.includes('將') || names.includes('帥')) {
+        patterns.push({name:'暴動格', hint:'見將帥而無兵卒護駕，慎防突發變數與情緒衝動，重大決定宜三思。'});
+    }
+
+    // 4. 三人同心格 (三支兵或三支卒)
+    const bingCount = arr.filter(p => p.name === '兵').length;
+    const zuCount = arr.filter(p => p.name === '卒').length;
+    if (bingCount >= 3 || zuCount >= 3) {
+        patterns.push({name:'三人同心格', hint:'眾志成城、資源俱足，適合團隊合作並積極推進。'});
+    }
+
+    // 5. 事業格 (車馬包齊聚) / 富貴格 (將士象齊聚)
+    const groups = new Set(arr.map(p => p.group));
+    if (groups.has('車俥') && groups.has('馬傌') && groups.has('包炮')) {
+        patterns.push({name:'車馬包事業格', hint:'行動、人脈與轉機齊聚，衝刺事業動能極強！'});
+    }
+    if (groups.has('將帥') && groups.has('士仕') && groups.has('象相')) {
+        patterns.push({name:'將士象富貴格', hint:'天格護佑、格局端正，易得長輩提拔與貴人扶持。'});
+    }
+
+    // 6. 十字天助格 (123同色 或 145同色) / 雨傘格 (234同色) / 勝利格 (235同色)
+    if ((piecesObj[1].color === piecesObj[2].color && piecesObj[1].color === piecesObj[3].color) ||
+        (piecesObj[1].color === piecesObj[4].color && piecesObj[1].color === piecesObj[5].color)) {
+        patterns.push({name:'十字天助格', hint:'天助大於人助，誠心祈願或參拜有緣神佛，易逢凶化吉。'});
+    } else if (piecesObj[2].color === piecesObj[3].color && piecesObj[2].color === piecesObj[4].color && piecesObj[1].color !== piecesObj[2].color) {
+        patterns.push({name:'雨傘格', hint:'受長輩或環境保護而安定，雖偶感壓抑受限，仍屬平安護佑之象。'});
+    } else if (piecesObj[2].color === piecesObj[3].color && piecesObj[2].color === piecesObj[5].color) {
+        patterns.push({name:'勝利格', hint:'外圍同心拱護，想做的事較容易達成共識與成局。'});
+    }
+
+    // 7. 消耗格 (兩支同色同字)
+    const counts = {};
+    arr.forEach(p => { counts[p.name] = (counts[p.name] || 0) + 1; });
+    const consumed = Object.keys(counts).filter(k => counts[k] === 2);
+    if (consumed.length > 0 && bingCount < 3 && zuCount < 3) {
+        patterns.push({name:`消耗格(${consumed.join('、')})`, hint:'留意自我內耗或與人磨擦，調整執著心態可減少能量損耗。'});
+    }
+
+    return patterns;
+}
+
+// 當使用者切換下拉選單類別時，若已經解過卦，即時重新產出該類別的解析
+function onCategoryChange() {
+    if (hasAnalyzed && currentIndex >= maxPieces) {
+        renderLocalOracle();
+    }
+}
+
+// 點擊「進行解卦」按鈕
+function getShortSummary() {
+    const btn = document.getElementById('btnAnalyze');
+    const spin = document.getElementById('summarySpinner');
+    const btnText = document.getElementById('btnAnalyzeText');
+
+    btn.disabled = true;
+    spin.style.display = 'inline-block';
+    btnText.textContent = '正在推演卦象神諭...';
+
+    setTimeout(() => {
+        spin.style.display = 'none';
+        btn.style.display = 'none';
+        hasAnalyzed = true;
+        renderLocalOracle();
+        document.getElementById('btnRequestFull').style.display = 'flex';
+    }, 380);
+}
+
+// 核心解卦渲染：針對所選【卜卦類別】與【象棋字義/格局】產生精準神諭
+function renderLocalOracle() {
+    const category = document.getElementById('queryCategory').value;
+    const qDetail = document.getElementById('userQuestion').value.trim();
+    const msgBox = document.getElementById('completeMsg');
+    const c1 = placed[1];
+    if (!c1) return;
+
+    const c1ColorText = c1.color === 'red' ? '紅' : '黑';
+    const catGuide = (categoryGuidanceDB[category] && categoryGuidanceDB[category][c1.group]) 
+        ? categoryGuidanceDB[category][c1.group] 
+        : '請順應中心主星特質，穩健踏實推進。';
+
+    let html = '';
+
+    if (currentMode === 'five') {
+        let redCount = 0; let blackCount = 0;
+        for (let i = 1; i <= 5; i++) {
+            if (placed[i]) { if (placed[i].color === 'red') redCount++; else blackCount++; }
+        }
+
+        let yinYangHint = '';
+        if (redCount === 5 || blackCount === 5) yinYangHint = '純陽／純陰之象，留意預期落差，宜守柔致和。';
+        else if (redCount >= 3) yinYangHint = `陽盛（${redCount}紅${blackCount}黑），外顯動能充足、順勢推進易見成效。`;
+        else yinYangHint = `陰盛（${redCount}紅${blackCount}黑），宜沉潛內修、穩住陣腳，忌躁進強求。`;
+
+        const patterns = detectFivePatterns(placed);
+        const topPattern = patterns.length > 0 ? patterns[0] : {name:'四方平衡格', hint:'依循中心主星穩步前行，事在人為。'};
+
+        // 組合成精煉 50 字神諭
+        const conciseOracle = `主星【${c1ColorText}${c1.name}】坐鎮、逢「${topPattern.name}」：${catGuide}`;
+
+        const confirmBadge = isVerified ? '<span style="color:#B8863B; font-size:12px;">（🌟 三聖筊認證）</span>' : '';
+
+        html += `<div style="font-size:15px; font-weight:900; color:var(--primary-dark); border-bottom:1px solid #C2DBC6; padding-bottom:6px; margin-bottom:8px;">
+                    📜 【${category}】象棋占卜神諭 ${confirmBadge}
+                 </div>`;
+        if (qDetail) {
+            html += `<div style="font-size:12px; color:var(--text-muted); margin-bottom:6px;">所問之事：${qDetail}</div>`;
+        }
+        html += `<div class="oracle-main-box">✨ <strong>核心指引：</strong>${conciseOracle}</div>`;
+        html += `<div style="font-size:12.5px; color:#4A4642; margin-top:8px; line-height:1.6;">
+                    • <strong>陰陽局勢</strong>：${yinYangHint}<br>
+                    • <strong>特殊格局</strong>：${patterns.length > 0 ? patterns.map(p => `【${p.name}】${p.hint}`).join(' ') : '無特殊沖剋，以中心主星為核心依歸。'}
+                 </div>`;
+    } else {
+        // 32子命運解碼室
+        let redCount = 0; let blackCount = 0;
+        for (let i = 1; i <= 32; i++) {
+            if (placed[i]) { if (placed[i].color === 'red') redCount++; else blackCount++; }
+        }
+        const totalGroup = {1: placed[1], 2: placed[2], 3: placed[3], 4: placed[4], 5: placed[5]};
+        const patterns = detectFivePatterns(totalGroup);
+
+        html += `<div style="font-size:15px; font-weight:900; color:var(--primary-dark); border-bottom:1px solid #C2DBC6; padding-bottom:6px; margin-bottom:8px;">
+                    🔮 【${category}】命運解碼總格指引
+                 </div>`;
+        html += `<div class="oracle-main-box">✨ <strong>本命總格【${c1ColorText}${c1.name}】：</strong>${catGuide}</div>`;
+        html += `<div style="font-size:12.5px; color:#4A4642; margin-top:8px; line-height:1.6;">
+                    • <strong>全盤陰陽</strong>：紅棋 ${redCount} 顆、黑棋 ${blackCount} 顆。<br>
+                    • <strong>總格結構</strong>：${patterns.length > 0 ? patterns.map(p => `【${p.name}】${p.hint}`).join(' ') : '總格氣勢平穩，可結合各十年大運宮位深入參照。'}
+                 </div>`;
+    }
+
+    msgBox.innerHTML = html;
+    msgBox.style.display = 'block';
+    setTimeout(() => msgBox.scrollIntoView({behavior:'smooth', block:'center'}), 150);
 }
 
 function buildBoardString() {
     let lines = [];
-    if(currentMode === 'five'){
-        for(let i=1; i<=5; i++) {
-            const p = placed[i];
-            if(p) lines.push(`[${i}]${p.color==='red'?'紅':'黑'}${p.name}`);
-        }
-    } else {
-        for(let i=1; i<=32; i++) {
-            const p = placed[i];
-            if(p) lines.push(`[${i}]${p.color==='red'?'紅':'黑'}${p.name}`);
-        }
+    const limit = currentMode === 'five' ? 5 : 32;
+    for(let i=1; i<=limit; i++) {
+        const p = placed[i];
+        if(p) lines.push(`[${i}]${p.color==='red'?'紅':'黑'}${p.name}`);
     }
     return lines.join(' ');
-}
-
-// 取得 50 字精要神諭
-async function getShortSummary() {
-    const category = document.getElementById('queryCategory').value;
-    const qDetail = document.getElementById('userQuestion').value.trim();
-    const finalQuestion = qDetail ? `類別：[${category}]，細節：${qDetail}` : `類別：[${category}]`;
-
-    const btn = document.getElementById('btnAnalyze');
-    const spin = document.getElementById('summarySpinner');
-    const msgBox = document.getElementById('completeMsg');
-    const reqBtn = document.getElementById('btnRequestFull');
-    
-    if (!GAS_WEBHOOK_URL) {
-        msgBox.innerHTML = "<span style='color:var(--chess-red); font-weight:bold;'>⚠️ 開發者提示：請先於程式碼填入 GAS_WEBHOOK_URL 以啟用 AI 連線。</span>";
-        msgBox.style.display = 'block';
-        reqBtn.style.display = 'block'; 
-        return;
-    }
-    
-    btn.disabled = true; 
-    spin.style.display = 'inline-block';
-    btn.childNodes[2].nodeValue = " 正在請示神諭...";
-    
-    try {
-        const res = await fetch(GAS_WEBHOOK_URL, {
-            method: 'POST',
-            body: JSON.stringify({
-                action: 'getSummary',
-                mode: currentMode,
-                question: finalQuestion,
-                board: buildBoardString()
-            })
-        });
-        const data = await res.json();
-        
-        msgBox.style.display = 'block';
-        if (data.status === 'success') {
-            msgBox.innerHTML = `<div style="font-size:15px; font-weight:900; color:var(--primary-dark); margin-bottom:10px; border-bottom:1px solid #C8DFCE; padding-bottom:8px;">📜 解卦神諭 (針對 ${category})</div><div style="font-size:14px; line-height:1.7;">${data.result}</div>`;
-        } else {
-            msgBox.innerHTML = `<span style="color:var(--chess-red); font-weight:bold;">讀取失敗：${data.message || '未知錯誤'}</span>`;
-        }
-    } catch(e) {
-        msgBox.style.display = 'block';
-        msgBox.innerHTML = `<span style="color:var(--chess-red); font-weight:bold;">連線異常，請稍後再試。</span>`;
-    }
-    
-    spin.style.display = 'none';
-    btn.style.display = 'none'; 
-    reqBtn.style.display = 'block'; 
-    setTimeout(() => msgBox.scrollIntoView({behavior:'smooth', block:'center'}), 150);
 }
 
 async function openRequestForm() {
@@ -1166,7 +1383,7 @@ async function openRequestForm() {
     const target = currentMode === 'five' ? document.querySelector('.board-column') : document.getElementById('captureTarget');
     try {
         const canvas = await html2canvas(target, { backgroundColor: '#F9F6F0', scale: 2 });
-        boardImageB64 = canvas.toDataURL('image/jpeg', 0.8);
+        boardImageB64 = canvas.toDataURL('image/jpeg', 0.85);
     } catch (e) { console.error("截圖失敗", e); }
 }
 
@@ -1180,52 +1397,79 @@ async function submitFullRequest() {
     const finalQuestion = qDetail ? `[${category}] ${qDetail}` : `[${category}]`;
 
     if (!name || !email) return alert("請填寫您的稱呼與電子信箱！");
-    if (!GAS_WEBHOOK_URL) return alert("尚未設定後端連線，無法寄送。");
     
     const btn = document.getElementById('submitRequestBtn');
     const spin = document.getElementById('submitSpinner');
-    btn.disabled = true; spin.style.display = 'inline-block';
-    btn.childNodes[2].nodeValue = " 傳送中...";
+    const btnText = document.getElementById('submitBtnText');
+
+    // 若尚未設定 GAS 網址，自動為使用者下載卦象圖並提示聯絡信箱
+    if (!GAS_WEBHOOK_URL) {
+        if (boardImageB64) {
+            const link = document.createElement('a');
+            link.download = `棋遇解憂室_${name}_${category}卦象圖.jpg`;
+            link.href = boardImageB64;
+            link.click();
+        }
+        alert(`📸 已為您自動下載卦象圖！\n\n請將剛剛下載的卦象圖片連同您的問題寄至大師信箱：\nalongchen0106@gmail.com\n\n（開發者若欲啟用網頁自動背景寄信，請於程式碼第 497 行填入 GAS_WEBHOOK_URL）`);
+        closeRequestForm();
+        return;
+    }
+    
+    btn.disabled = true;
+    spin.style.display = 'inline-block';
+    btnText.textContent = "傳送中...";
     
     try {
         const res = await fetch(GAS_WEBHOOK_URL, {
             method: 'POST',
+            mode: 'cors',
+            redirect: 'follow',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
             body: JSON.stringify({
                 action: 'sendEmail',
                 name: name,
                 email: email,
                 question: finalQuestion,
-                mode: currentMode,
-                board: buildBoardString(),
-                image: boardImageB64.split(',')[1]
+                modeName: currentMode === 'five' ? '象棋占卜(五子)' : '命運解碼室(32子)',
+                boardSummary: buildBoardString(),
+                imageBase64: boardImageB64
             })
         });
         const data = await res.json();
         
         if (data.status === 'success') {
-            alert("✅ 卦象已成功提交！大師親筆深度解析將盡快發送至您的信箱。");
+            alert("✅ 卦象圖與資料已成功提交！大師完整解析將發送至您的信箱。");
             closeRequestForm();
         } else {
             alert("發送失敗：" + (data.message || '未知錯誤'));
         }
-    } catch (e) { alert("網路連線異常，請確認後重試。"); }
+    } catch (e) {
+        alert("網路連線異常，請確認 GAS 部署權限是否設為「所有人」。");
+    }
     
-    btn.disabled = false; spin.style.display = 'none';
-    btn.childNodes[2].nodeValue = " 確認送出";
+    btn.disabled = false;
+    spin.style.display = 'none';
+    btnText.textContent = "📨 索取完整解卦";
 }
 
 function resetGame() {
     remaining = [...pieceSet].sort(() => Math.random() - 0.5);
     currentIndex = 0; placed = {}; shuffleLeft = 3; boardImageB64 = "";
+    hasAnalyzed = false;
     
     initBoard(); renderPool(); updateStatusUI();
     
     document.getElementById('shuffleBtn').disabled = false;
-    document.getElementById('shuffleBtn').textContent = '洗牌 (剩 3)';
-    document.getElementById('drawnPreview').innerHTML = '<span style="font-size:11px; color:#CCC;">待翻</span>';
+    document.getElementById('shuffleBtn').textContent = '✋ 洗牌 (剩 3 次)';
+    document.getElementById('drawnPreview').innerHTML = '<span style="font-size:11px; color:#AAA;">待翻</span>';
     document.getElementById('bobeiCard').style.display = 'none';
     
-    document.getElementById('btnAnalyze').style.display = 'none';
+    const btnAnalyze = document.getElementById('btnAnalyze');
+    btnAnalyze.style.display = 'none';
+    btnAnalyze.disabled = false;
+    document.getElementById('summarySpinner').style.display = 'none';
+    document.getElementById('btnAnalyzeText').textContent = '📜 指導靈已確認，點此進行解卦';
+
     document.getElementById('btnRequestFull').style.display = 'none';
     document.getElementById('completeMsg').innerHTML = '';
     document.getElementById('completeMsg').style.display = 'none';
@@ -1280,7 +1524,7 @@ function loadResult() {
         if(p) {
             const cell = document.getElementById(`cell-${i}`); cell.classList.remove('covered');
             const cp = document.createElement('div'); cp.className = `chess-piece ${p.color}`; cp.textContent = p.name; cell.appendChild(cp);
-            if(i === currentIndex) document.getElementById('drawnPreview').innerHTML = `<div class="chess-piece ${p.color}" style="transform:scale(0.85);">${p.name}</div>`;
+            if(i === currentIndex) document.getElementById('drawnPreview').innerHTML = `<div class="chess-piece ${p.color}" style="transform:scale(0.82);">${p.name}</div>`;
         }
     }
     
@@ -1292,11 +1536,14 @@ function loadResult() {
             updateBobeiLights();
             if(isVerified) {
                 document.getElementById('bobeiBadge').textContent = '🌟 已獲三聖筊認證！';
-                document.getElementById('bobeiBtn').disabled = true; document.getElementById('bobeiBtn').textContent = '認證成功';
-                document.getElementById('btnAnalyze').style.display = 'block';
+                document.getElementById('bobeiBtn').disabled = true;
+                document.getElementById('bobeiBtn').textContent = '✨ 認證成功';
+                renderLocalOracle();
+                document.getElementById('btnRequestFull').style.display = 'flex';
             }
         } else {
-            document.getElementById('btnAnalyze').style.display = 'block';
+            renderLocalOracle();
+            document.getElementById('btnRequestFull').style.display = 'flex';
         }
     } else {
         const next = document.getElementById(`cell-${currentIndex+1}`);
